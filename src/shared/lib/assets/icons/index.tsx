@@ -1,0 +1,12 @@
+export { ReactComponent as AiIcon } from './ai.svg';
+export { ReactComponent as AttentionIcon } from './attention.svg';
+export { ReactComponent as ClockIcon } from './clock.svg';
+export { ReactComponent as QuestionIcon } from './question.svg';
+export { ReactComponent as ShieldIcon } from './shield.svg';
+export { ReactComponent as TrophyIcon } from './trophy.svg';
+export { ReactComponent as UpChartIcon } from './up-chart.svg';
+export { ReactComponent as UploadIcon } from './upload.svg';
+export { ReactComponent as LoaderIcon } from './loader.svg';
+export { ReactComponent as ChevronIcon } from './chevron.svg';
+export { ReactComponent as PulseIcon } from './pulse.svg';
+export { ReactComponent as CloseIcon } from './close.svg';

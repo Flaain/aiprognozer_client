@@ -1,0 +1,45 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@theme {
+    --color-primary-dark: #0a0a0a;
+    --color-primary-dark-secondary: #1a1a1a;
+    --color-primary-blue: #155dfc;
+    --color-primary-blue-transparent: rgba(43, 127, 255, 0.1);
+    --color-primary-white: #f2f2f2;
+    --color-primary-white-secondary: rgba(95%, 95%, 95%, 0.5);
+    --color-primary-error: tomato;
+
+    --animate-shimmer: shimmer 3.5s infinite 5s;
+
+    @keyframes shimmer {
+        0% {
+            transform: translateX(-100%);
+            opacity: 0;
+        }
+        10% {
+            opacity: 1;
+        }
+        40% {
+            transform: translateX(100%);
+            opacity: 1;
+        }
+        50% {
+            opacity: 0;
+        }
+        100% {
+            transform: translateX(-100%);
+            opacity: 0;
+        }
+    }
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: var(--color-primary-dark);
+    }
+}
