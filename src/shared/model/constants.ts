@@ -1,4 +1,4 @@
-import type { ApiExceptionCode } from "../api";
+import type { ApiExceptionCode } from "./types";
 
 export const MAX_ID_LENGTH = 9;
 export const REQUEST_LIMIT = 10;

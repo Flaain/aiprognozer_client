@@ -1,40 +1,125 @@
-import { AiIcon, ChevronIcon, CloseIcon, UploadIcon } from '@/shared/lib/assets/icons';
+import { Fragment } from 'react/jsx-runtime';
+
+import { SportDropdown } from '@/features/sport-dropdown';
+
+import { AiIcon, AttentionIcon, CloseIcon, LoaderIcon, PulseIcon, UploadIcon } from '@/shared/lib/assets/icons';
 
 import { cn } from '@/shared/lib/utils';
+import type { Analysis } from '@/shared/model/types';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { LoadingButton } from '@/shared/ui/loading-button';
 import { Typography } from '@/shared/ui/typography';
 
+import { ALLOWED_TYPES, LOADING_WORDS } from '../model/constants';
 import { useUpload } from '../model/useUpload';
 
-export const Upload = () => {
-    const { onChange, handleRemove, delta, request_limit, image, isOvered, ref, percent } = useUpload();
+export const Upload = ({ onAnalysisReady }: { onAnalysisReady: (analysis: Analysis) => void }) => {
+    const {
+        onChange,
+        onStartAnalysis,
+        handleRemove,
+        mainButtonRef,
+        sportType,
+        dropZoneError,
+        setDropZoneError,
+        onSportTypeChange,
+        delta,
+        request_limit,
+        image,
+        isOvered,
+        ref,
+        percent,
+        isLoading
+    } = useUpload();
 
     return (
-        <div className='flex flex-col gap-5 w-full box-border'>
-            <div className='flex items-center justify-between rounded-lg py-2 px-[10px] border-1 border-solid border-primary-white-secondary/30 w-full text-primary-white-secondary text-sm font-normal'>
-                Выберите вид спорта для анализа
-                <ChevronIcon className='text-primary-white-secondary size-5' />
-            </div>
+        <div className='flex flex-col gap-5 w-full box-border relative'>
+            <SportDropdown onSelect={onSportTypeChange} value={sportType} disabled={isLoading} />
             <label
                 ref={ref}
                 className={cn(
-                    'cursor-pointer relative h-[450px] hover:border-primary-blue transition-colors ease-in-out duration-300 flex flex-col p-5 max-sm:p-3 items-center justify-center gap-1 box-border border-2 border-dashed border-primary-white-secondary/30 rounded-[14px]',
-                    isOvered && 'border-primary-blue bg-primary-blue-transparent'
+                    'cursor-pointer relative h-[450px] transition-colors ease-in-out duration-300 flex flex-col p-5 max-sm:p-3 items-center justify-center gap-1 box-border border-2 border-dashed rounded-[14px]',
+                    isOvered && !isLoading && 'border-primary-blue bg-primary-blue-transparent',
+                    dropZoneError
+                        ? 'border-primary-error/50 hover:border-primary-error'
+                        : 'border-primary-white-secondary/30 hover:border-primary-blue'
                 )}
             >
-                <Input type='file' className='sr-only' onChange={onChange} />
+                <Input
+                    type='file'
+                    className='sr-only'
+                    onChange={onChange}
+                    accept='image/jpeg, image/png'
+                    disabled={isLoading}
+                />
+                {isLoading && sportType && image && (
+                    <div className='left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 px-3 absolute z-10 flex flex-col items-center gap-2 max-sm:max-w-[300px] max-w-[500px] w-full'>
+                        <LoaderIcon className='size-10 animate-spin text-primary-blue/50' />
+                        <div className='overflow-hidden h-14 relative w-full'>
+                            {LOADING_WORDS['mma'].map((word, index, arr) => {
+                                if (index === arr.length - 1) {
+                                    return (
+                                        <Fragment key={'fragment-loader-list'}>
+                                            <Typography
+                                                key={index}
+                                                size='md'
+                                                weight='bold'
+                                                className='flex items-center justify-center size-full text-primary-white animate-text-loader line-clamp-1 text-pretty'
+                                            >
+                                                {word}
+                                            </Typography>
+                                            <Typography
+                                                key={`${0}-dublicated`}
+                                                size='md'
+                                                weight='bold'
+                                                className='flex items-center justify-center size-full text-primary-white animate-text-loader line-clamp-1 text-pretty'
+                                            >
+                                                {arr[0]}
+                                            </Typography>
+                                        </Fragment>
+                                    );
+                                }
+
+                                return (
+                                    <Typography
+                                        key={index}
+                                        size='md'
+                                        weight='bold'
+                                        className='flex items-center justify-center size-full text-primary-white animate-text-loader line-clamp-1 text-pretty'
+                                    >
+                                        {word}
+                                    </Typography>
+                                );
+                            })}
+                        </div>
+                    </div>
+                )}
                 {image ? (
-                    <>
-                        <Button size='icon' className='ml-auto absolute max-sm:right-3 max-sm:top-3 right-5 top-5' onClick={handleRemove}>
+                    <div className='flex size-full grow-1 overflow-hidden rounded-[14px]'>
+                        <Button
+                            disabled={isLoading}
+                            variant='error'
+                            size='icon'
+                            className={cn(
+                                'ml-auto absolute max-sm:right-3 max-sm:top-3 right-5 top-5 z-10',
+                                isLoading && 'blur-xs'
+                            )}
+                            onClick={handleRemove}
+                        >
                             <CloseIcon />
                         </Button>
-                        <img src={image} className='object-cover object-center rounded-[14px] size-full' />
-                    </>
+                        <img
+                            src={image}
+                            className={cn(
+                                'object-cover object-center rounded-[14px] size-full',
+                                isLoading && 'blur-md'
+                            )}
+                        />
+                    </div>
                 ) : (
                     <>
-                        <div className='pointer-events-none flex flex-col items-center gap-2'>
+                        <div className='flex flex-col items-center gap-2'>
                             <Typography className='flex size-16 mb-2 bg-primary-blue-transparent rounded-full items-center justify-center'>
                                 <UploadIcon className='size-10 text-primary-blue' />
                             </Typography>
@@ -42,17 +127,31 @@ export const Upload = () => {
                                 {isOvered ? 'Отпустите изображение' : 'Загрузите изображение'}
                             </Typography>
                             <Typography as='p' variant='secondary' weight='thin' className='text-pretty'>
-                                Поддерживаемые форматы: PNG, JPG, JPEG
+                                Поддерживаемые форматы: {ALLOWED_TYPES.join(', ').toUpperCase()}
                             </Typography>
                         </div>
                     </>
                 )}
             </label>
+            {dropZoneError && (
+                <div
+                    onClick={() => setDropZoneError(null)}
+                    className='flex cursor-pointer items-start justify-start p-5 max-sm:p-3 relative bg-primary-error/10 rounded-[14px] border border-solid border-primary-error'
+                >
+                    <AttentionIcon className='min-w-5 min-h-5 size-5 text-primary-error mr-3' />
+                    <Typography variant='error' as='p' weight='thin' size='sm' className='text-pretty text-left'>
+                        {dropZoneError}
+                    </Typography>
+                </div>
+            )}
             <div className='flex flex-col gap-2 p-3 rounded-[14px] border border-solid border-primary-white-secondary/30'>
                 <div className='flex items-center justify-between'>
-                    <Typography variant='secondary' weight='thin'>
-                        Доступно запросов
-                    </Typography>
+                    <div className='flex items-center gap-2'>
+                        <PulseIcon className='size-5 text-primary-blue' />
+                        <Typography variant='secondary' weight='thin'>
+                            Доступно запросов
+                        </Typography>
+                    </div>
                     <Typography variant='secondary' weight='medium'>
                         {delta} / {request_limit}
                     </Typography>
@@ -66,10 +165,21 @@ export const Upload = () => {
                     </div>
                 </div>
             </div>
-            <LoadingButton cta className='sticky bottom-2'>
-                <AiIcon className='text-primary-white size-5' />
-                Запустить анализ
-            </LoadingButton>
+            <div
+                ref={mainButtonRef}
+                className='py-3 hidden z-10 bg-primary-dark sticky bottom-0 opacity-0 translate-y-10 transition-all duration-300 ease-in-out'
+            >
+                <LoadingButton
+                    cta
+                    onClick={onStartAnalysis}
+                    className='h-11'
+                    disabled={!image || !sportType}
+                    isLoading={isLoading}
+                >
+                    <AiIcon className='text-primary-white size-5' />
+                    Запустить анализ
+                </LoadingButton>
+            </div>
         </div>
     );
 };

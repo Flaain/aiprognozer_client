@@ -122,6 +122,12 @@ export interface UseDropZoneProps {
      * If omitted — all mimetypes are accepted.
      */
     mimetypes?: Array<string>;
+
+    /**
+     * Disable the drop zone.
+     * @default false
+     */
+    disabled?: boolean
 }
 
 /**
@@ -161,6 +167,7 @@ export interface UseDropZoneProps {
 export const useDropZone = <T extends HTMLElement>({
     maxFiles = 1,
     maxSize,
+    disabled,
     mimetypes,
     onDrop,
     onError,
@@ -173,12 +180,14 @@ export const useDropZone = <T extends HTMLElement>({
     const [isOvered, setIsOvered] = useState(false);
 
     const ref = useRef<T>(null);
+    const counter = useRef(0);
 
     useEffect(() => {
-        if (!ref.current) return;
+        if (!ref.current || disabled) return;
 
         const controller = new AbortController();
-
+        const options = { signal: controller.signal };
+        
         const onDragEvent = (event: DragEvent) => {
             event.preventDefault();
 
@@ -188,6 +197,8 @@ export const useDropZone = <T extends HTMLElement>({
 
             if (event.type === 'drop') {
                 setIsOvered(false);
+                
+                counter.current = 0;
 
                 if (!isValid(files)) return;
 
@@ -201,10 +212,12 @@ export const useDropZone = <T extends HTMLElement>({
                 onEnter?.(event);
                 setIsOvered(true);
 
+                counter.current += 1;
+
                 return;
             }
 
-            if (event.type === 'dragleave') {
+            if (event.type === 'dragleave' && (counter.current -= 1) === 0) {
                 onLeave?.(event);
                 setIsOvered(false);
 
@@ -214,15 +227,15 @@ export const useDropZone = <T extends HTMLElement>({
             if (event.type === 'dragover') return onOver?.(event);
         };
 
-        ref.current.addEventListener('dragenter', onDragEvent, { signal: controller.signal });
-        ref.current.addEventListener('dragleave', onDragEvent, { signal: controller.signal });
-        ref.current.addEventListener('dragover', onDragEvent, { signal: controller.signal });
-        ref.current.addEventListener('drop', onDragEvent, { signal: controller.signal });
+        ref.current.addEventListener('dragenter', onDragEvent, options);
+        ref.current.addEventListener('dragleave', onDragEvent, options);
+        ref.current.addEventListener('dragover', onDragEvent, options);
+        ref.current.addEventListener('drop', onDragEvent, options);
 
         return () => {
             controller.abort();
         };
-    }, []);
+    }, [disabled]);
 
     const isValid = (items: Array<File>) => {
         if (items.length > maxFiles) {
@@ -255,7 +268,7 @@ export const useDropZone = <T extends HTMLElement>({
     };
 
     const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (!event.target.files?.length) return;
+        if (!event.target.files?.length || disabled) return;
         
         const files = Array.from(event.target.files);
         

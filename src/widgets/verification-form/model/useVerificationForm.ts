@@ -4,8 +4,8 @@ import { isAxiosError, type AxiosError } from "axios";
 
 import { userApi, useUser } from "@/entities/user";
 
-import type { ApiFailureData } from "@/shared/api";
 import { ERROR_CODE_TO_MESSAGE, MAX_ID_LENGTH } from "@/shared/model/constants";
+import type { ApiFailureData } from "@/shared/model/types";
 
 export const useVerificationForm = () => {
     const [one_win_id, setOneWinId] = useState('');
