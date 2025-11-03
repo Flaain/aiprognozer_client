@@ -2,7 +2,7 @@ import { Fragment } from 'react/jsx-runtime';
 
 import { SportDropdown } from '@/features/sport-dropdown';
 
-import { AiIcon, AttentionIcon, CloseIcon, LoaderIcon, PulseIcon, UploadIcon } from '@/shared/lib/assets/icons';
+import { AiIcon, AttentionIcon, CloseIcon, PulseIcon, UploadIcon } from '@/shared/lib/assets/icons';
 
 import { cn } from '@/shared/lib/utils';
 import type { Analysis } from '@/shared/model/types';
@@ -39,11 +39,11 @@ export const Upload = ({ onAnalysisReady }: { onAnalysisReady: (analysis: Analys
             <label
                 ref={ref}
                 className={cn(
-                    'cursor-pointer relative h-[450px] transition-colors ease-in-out duration-300 flex flex-col p-5 max-sm:p-3 items-center justify-center gap-1 box-border border-2 border-dashed rounded-[14px]',
-                    isOvered && !isLoading && 'border-primary-blue bg-primary-blue-transparent',
-                    dropZoneError
-                        ? 'border-primary-error/50 hover:border-primary-error'
-                        : 'border-primary-white-secondary/30 hover:border-primary-blue'
+                    'relative h-[450px] transition-colors ease-in-out duration-300 flex flex-col p-5 max-sm:p-3 items-center justify-center gap-1 box-border border-2 border-dashed rounded-[14px]',
+                    isOvered && !isLoading && (dropZoneError ? 'border-primary-error bg-primary-error/10' : 'border-primary-blue bg-primary-blue-transparent'),
+                    dropZoneError ? 'border-primary-error/50' : 'border-primary-white-secondary/30',
+                    !isLoading && 'cursor-pointer',
+                    !isLoading && (dropZoneError ? 'hover:border-primary-error' : 'hover:border-primary-blue')
                 )}
             >
                 <Input
@@ -54,66 +54,62 @@ export const Upload = ({ onAnalysisReady }: { onAnalysisReady: (analysis: Analys
                     disabled={isLoading}
                 />
                 {isLoading && sportType && image && (
-                    <div className='left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 px-3 absolute z-10 flex flex-col items-center gap-2 max-sm:max-w-[300px] max-w-[500px] w-full'>
-                        <LoaderIcon className='size-10 animate-spin text-primary-blue/50' />
-                        <div className='overflow-hidden h-14 relative w-full'>
-                            {LOADING_WORDS['mma'].map((word, index, arr) => {
-                                if (index === arr.length - 1) {
-                                    return (
-                                        <Fragment key={'fragment-loader-list'}>
-                                            <Typography
-                                                key={index}
-                                                size='md'
-                                                weight='bold'
-                                                className='flex items-center justify-center size-full text-primary-white animate-text-loader line-clamp-1 text-pretty'
-                                            >
-                                                {word}
-                                            </Typography>
-                                            <Typography
-                                                key={`${0}-dublicated`}
-                                                size='md'
-                                                weight='bold'
-                                                className='flex items-center justify-center size-full text-primary-white animate-text-loader line-clamp-1 text-pretty'
-                                            >
-                                                {arr[0]}
-                                            </Typography>
-                                        </Fragment>
-                                    );
-                                }
-
+                    <div className='left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 px-3 absolute z-10 gap-2 max-sm:max-w-[300px] max-w-[500px] w-full overflow-hidden h-14'>
+                        {LOADING_WORDS[sportType].map((word, index, arr) => {
+                            if (index === arr.length - 1) {
                                 return (
-                                    <Typography
-                                        key={index}
-                                        size='md'
-                                        weight='bold'
-                                        className='flex items-center justify-center size-full text-primary-white animate-text-loader line-clamp-1 text-pretty'
-                                    >
-                                        {word}
-                                    </Typography>
+                                    <Fragment key={'fragment-loader-words-list'}>
+                                        <Typography
+                                            key={index}
+                                            size='md'
+                                            weight='bold'
+                                            className='flex items-center justify-center text-primary-white size-full animate-text-loader text-center'
+                                        >
+                                            {word}
+                                        </Typography>
+                                        <Typography
+                                            key={`${0}-dublicated`}
+                                            size='md'
+                                            weight='bold'
+                                            className='flex items-center justify-center text-primary-white size-full animate-text-loader text-center'
+                                        >
+                                            {arr[0]}
+                                        </Typography>
+                                    </Fragment>
                                 );
-                            })}
-                        </div>
+                            }
+
+                            return (
+                                <Typography
+                                    key={index}
+                                    size='md'
+                                    weight='bold'
+                                    className='flex items-center justify-center text-primary-white size-full animate-text-loader text-center'
+                                >
+                                    {word}
+                                </Typography>
+                            );
+                        })}
                     </div>
                 )}
                 {image ? (
                     <div className='flex size-full grow-1 overflow-hidden rounded-[14px]'>
-                        <Button
-                            disabled={isLoading}
-                            variant='error'
-                            size='icon'
-                            className={cn(
-                                'ml-auto absolute max-sm:right-3 max-sm:top-3 right-5 top-5 z-10',
-                                isLoading && 'blur-xs'
-                            )}
-                            onClick={handleRemove}
-                        >
-                            <CloseIcon />
-                        </Button>
+                        {!isLoading && (
+                            <Button
+                                disabled={isLoading}
+                                variant='error'
+                                size='icon'
+                                className='ml-auto absolute max-sm:right-3 max-sm:top-3 right-5 top-5 z-10'
+                                onClick={handleRemove}
+                            >
+                                <CloseIcon />
+                            </Button>
+                        )}
                         <img
-                            src={image}
+                            src={image.url}
                             className={cn(
-                                'object-cover object-center rounded-[14px] size-full',
-                                isLoading && 'blur-md'
+                                'object-cover object-center rounded-[14px] size-full transition-all ease-in-out duration-300',
+                                isLoading && 'blur-xs opacity-50 grayscale-100'
                             )}
                         />
                     </div>

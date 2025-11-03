@@ -5,5 +5,6 @@ export interface UserStore {
     actions: {
         on_signin: (user: User) => void;
         on_verify: () => void;
+        on_request: () => void;
     };
 }

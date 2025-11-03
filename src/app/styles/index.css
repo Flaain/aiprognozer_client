@@ -9,9 +9,9 @@
     --color-primary-white: #f2f2f2;
     --color-primary-white-secondary: rgba(95%, 95%, 95%, 0.5);
     --color-primary-error: tomato;
-    
+
     --animate-shimmer: shimmer 3.5s infinite 5s;
-    --animate-text-loader: text-loader 20s infinite;
+    --animate-text-loader: text-loader 20s infinite 1s;
 
     @keyframes shimmer {
         0% {
@@ -36,80 +36,78 @@
 
     @keyframes text-loader {
         0% {
-          transform: translateY(0);
+            transform: translateY(0);
         }
-        
         5% {
-          transform: translateY(-102%);
+            transform: translateY(-102%);
         }
         10% {
-          transform: translateY(-100%);
+            transform: translateY(-100%);
         }
-      
+
         15% {
-          transform: translateY(-202%);
+            transform: translateY(-202%);
         }
         20% {
-          transform: translateY(-200%);
+            transform: translateY(-200%);
         }
-      
+
         25% {
-          transform: translateY(-302%);
+            transform: translateY(-302%);
         }
         30% {
-          transform: translateY(-300%);
+            transform: translateY(-300%);
         }
-      
+
         35% {
-          transform: translateY(-402%);
+            transform: translateY(-402%);
         }
         40% {
-          transform: translateY(-400%);
+            transform: translateY(-400%);
         }
-      
+
         45% {
-          transform: translateY(-502%);
+            transform: translateY(-502%);
         }
         50% {
-          transform: translateY(-500%);
+            transform: translateY(-500%);
         }
-      
+
         55% {
-          transform: translateY(-602%);
+            transform: translateY(-602%);
         }
         60% {
-          transform: translateY(-600%);
+            transform: translateY(-600%);
         }
-      
+
         65% {
-          transform: translateY(-702%);
+            transform: translateY(-702%);
         }
         70% {
-          transform: translateY(-700%);
+            transform: translateY(-700%);
         }
-      
+
         75% {
-          transform: translateY(-802%);
+            transform: translateY(-802%);
         }
         80% {
-          transform: translateY(-800%);
+            transform: translateY(-800%);
         }
-      
+
         85% {
-          transform: translateY(-902%);
+            transform: translateY(-902%);
         }
         90% {
-          transform: translateY(-900%);
+            transform: translateY(-900%);
         }
-      
+
         95% {
-          transform: translateY(-1002%);
+            transform: translateY(-1002%);
         }
         100% {
-          transform: translateY(-1000%);
+            transform: translateY(-1000%);
         }
-      }
-      
+    }
 }
 
 body {
