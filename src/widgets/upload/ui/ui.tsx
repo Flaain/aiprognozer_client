@@ -2,7 +2,7 @@ import { Fragment } from 'react/jsx-runtime';
 
 import { SportDropdown } from '@/features/sport-dropdown';
 
-import { AiIcon, AttentionIcon, CloseIcon, PulseIcon, UploadIcon } from '@/shared/lib/assets/icons';
+import { AiIcon, AttentionIcon, ClockIcon, CloseIcon, PulseIcon, UploadIcon } from '@/shared/lib/assets/icons';
 
 import { cn } from '@/shared/lib/utils';
 import type { Analysis } from '@/shared/model/types';
@@ -26,24 +26,25 @@ export const Upload = ({ onAnalysisReady }: { onAnalysisReady: (analysis: Analys
         onSportTypeChange,
         delta,
         request_limit,
+        isReachedLimit,
         image,
         isOvered,
         ref,
         percent,
         isLoading
-    } = useUpload();
+    } = useUpload(onAnalysisReady);
 
     return (
         <div className='flex flex-col gap-5 w-full box-border relative'>
-            <SportDropdown onSelect={onSportTypeChange} value={sportType} disabled={isLoading} />
+            <SportDropdown onSelect={onSportTypeChange} value={sportType} disabled={isLoading || isReachedLimit} />
             <label
                 ref={ref}
                 className={cn(
                     'relative h-[450px] transition-colors ease-in-out duration-300 flex flex-col p-5 max-sm:p-3 items-center justify-center gap-1 box-border border-2 border-dashed rounded-[14px]',
                     isOvered && !isLoading && (dropZoneError ? 'border-primary-error bg-primary-error/10' : 'border-primary-blue bg-primary-blue-transparent'),
                     dropZoneError ? 'border-primary-error/50' : 'border-primary-white-secondary/30',
-                    !isLoading && 'cursor-pointer',
-                    !isLoading && (dropZoneError ? 'hover:border-primary-error' : 'hover:border-primary-blue')
+                    !isLoading && !isReachedLimit && 'cursor-pointer',
+                    !isLoading && !isReachedLimit && (dropZoneError ? 'hover:border-primary-error' : 'hover:border-primary-blue')
                 )}
             >
                 <Input
@@ -51,7 +52,7 @@ export const Upload = ({ onAnalysisReady }: { onAnalysisReady: (analysis: Analys
                     className='sr-only'
                     onChange={onChange}
                     accept='image/jpeg, image/png'
-                    disabled={isLoading}
+                    disabled={isLoading || isReachedLimit}
                 />
                 {isLoading && sportType && image && (
                     <div className='left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 px-3 absolute z-10 gap-2 max-sm:max-w-[300px] max-w-[500px] w-full overflow-hidden h-14'>
@@ -117,14 +118,31 @@ export const Upload = ({ onAnalysisReady }: { onAnalysisReady: (analysis: Analys
                     <>
                         <div className='flex flex-col items-center gap-2'>
                             <Typography className='flex size-16 mb-2 bg-primary-blue-transparent rounded-full items-center justify-center'>
-                                <UploadIcon className='size-10 text-primary-blue' />
+                                {isReachedLimit ? (
+                                    <ClockIcon className='size-10 text-primary-blue' />
+                                ) : (
+                                    <UploadIcon className='size-10 text-primary-blue' />
+                                )}
                             </Typography>
-                            <Typography as='h2' size='2xl' weight='semibold'>
-                                {isOvered ? 'Отпустите изображение' : 'Загрузите изображение'}
-                            </Typography>
-                            <Typography as='p' variant='secondary' weight='thin' className='text-pretty'>
-                                Поддерживаемые форматы: {ALLOWED_TYPES.join(', ').toUpperCase()}
-                            </Typography>
+                            {isReachedLimit ? (
+                                <>
+                                    <Typography as='h2' size='2xl' weight='semibold'>
+                                        Достигнут лимит запросов
+                                    </Typography>
+                                    <Typography as='p' variant='secondary' weight='thin' className='text-pretty'>
+                                        Запросы обнулятся через 24 часа.
+                                    </Typography>
+                                </>
+                            ) : (
+                                <>
+                                    <Typography as='h2' size='2xl' weight='semibold'>
+                                        {isOvered ? 'Отпустите изображение' : 'Загрузите изображение'}
+                                    </Typography>
+                                    <Typography as='p' variant='secondary' weight='thin' className='text-pretty'>
+                                        Поддерживаемые форматы: {ALLOWED_TYPES.join(', ').toUpperCase()}
+                                    </Typography>
+                                </>
+                            )}
                         </div>
                     </>
                 )}
@@ -166,7 +184,7 @@ export const Upload = ({ onAnalysisReady }: { onAnalysisReady: (analysis: Analys
                 className='py-3 hidden z-10 bg-primary-dark sticky bottom-0 opacity-0 translate-y-10 transition-all duration-300 ease-in-out'
             >
                 <LoadingButton
-                    cta
+                    cta={!isLoading && !!image && !!sportType}
                     onClick={onStartAnalysis}
                     className='h-11'
                     disabled={!image || !sportType}

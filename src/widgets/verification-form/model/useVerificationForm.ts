@@ -40,7 +40,7 @@ export const useVerificationForm = () => {
 
             await userApi.verify(one_win_id);
 
-            useUser.getState().actions.on_verify();
+            useUser.getState().actions.onVerify();
         } catch (error) {
             if (isAxiosError(error)) {
                 const { response } = error as AxiosError<ApiFailureData>;

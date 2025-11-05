@@ -1,9 +1,11 @@
+import { Suspense } from 'react';
+
 import { useShallow } from 'zustand/shallow';
 
 import { Home } from '@/pages/home';
 
 import { LoginError } from '@/widgets/login-error';
-import { VerificationForm } from '@/widgets/verification-form';
+import { VerificationForm, VerificationFormSkeleton } from '@/widgets/verification-form';
 
 import { useSession, sessionFlagsSelector } from '@/entities/session';
 import { useUser, userSelector } from '@/entities/user';
@@ -19,5 +21,13 @@ export const App = () => {
 
     if (!is_authorized) return <LoginError />;
 
-    return user.isVerified ? <Home /> : <VerificationForm />;
+    if (!user.isVerified) {
+        return (
+            <Suspense fallback={<VerificationFormSkeleton />}>
+                <VerificationForm />
+            </Suspense>
+        );
+    }
+
+    return <Home />;
 };

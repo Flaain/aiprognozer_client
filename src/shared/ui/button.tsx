@@ -48,7 +48,7 @@ function Button({
             data-slot='button'
             className={cn(
                 buttonVariants({ variant, size, className }),
-                cta && !props.disabled && 'before:absolute before:inset-0 before:rounded-md before:opacity-0 before:animate-shimmer before:bg-gradient-to-r before:from-transparent before:via-primary-white/50 before:to-transparent overflow-hidden isolate before:border-y before:border-primary-white/20'
+                cta && 'before:absolute before:inset-0 before:rounded-md before:opacity-0 before:animate-shimmer before:bg-gradient-to-r before:from-transparent before:via-primary-white/50 before:to-transparent overflow-hidden isolate before:border-y before:border-primary-white/20'
             )}
             {...props}
         />
