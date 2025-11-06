@@ -34,5 +34,5 @@ export interface Prediction {
 
 export interface Analysis {
     prediction: Prediction;
-    alternative: Array<Omit<Prediction, 'description'>>;
+    alternatives: Array<Omit<Prediction, 'reasoning'>>;
 }

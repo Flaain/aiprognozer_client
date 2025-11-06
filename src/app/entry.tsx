@@ -26,7 +26,7 @@ const init = async (debug: boolean) => {
     
     viewport.bindCssVars();
     miniApp.bindCssVars();
-
+    
     initData.restore();
 
     useTheme.getState().actions.changeTheme(getTheme());

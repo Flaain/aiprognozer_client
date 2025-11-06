@@ -9,8 +9,8 @@ export const Skeleton = ({ animate = true, className, children, ...rest }: Anima
         {...rest}
         className={cn(
             'relative',
+            animate && 'bg-primary-dark-secondary before:absolute before:inset-0 before:animate-[shimmer_3s_infinite] before:bg-gradient-to-r before:from-transparent before:via-gray-200/10 before:to-transparent overflow-hidden isolate before:border-t before:border-primary-white-secondary/30',
             className,
-            animate && 'bg-primary-dark-secondary before:absolute before:inset-0 before:animate-[shimmer_3s_infinite] before:bg-gradient-to-r before:from-transparent before:via-gray-200/10 before:to-transparent overflow-hidden isolate before:border-t before:border-primary-white-secondary/30'
         )}
     >
         {children}

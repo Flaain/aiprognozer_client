@@ -12,6 +12,7 @@
 
     --animate-shimmer: shimmer 3.5s infinite 5s;
     --animate-text-loader: text-loader 20s infinite 1s;
+    --breakpoint-681: 42.55rem;
 
     @keyframes shimmer {
         0% {

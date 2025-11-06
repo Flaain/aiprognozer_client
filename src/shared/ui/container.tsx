@@ -6,8 +6,8 @@ interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export const Container = ({ children, className, ...rest }: ContainerProps) => {
     return (
-        <div {...rest} className={cn('px-5 max-w-5xl w-full box-border mx-auto min-h-dvh', className)}>
+        <section {...rest} className={cn('px-5 max-w-5xl w-full box-border mx-auto min-h-dvh pb-(--tg-viewport-safe-area-inset-bottom) pt-(--tg-viewport-safe-area-inset-top)', className)}>
             {children}
-        </div>
+        </section>
     );
 };

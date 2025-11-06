@@ -40,9 +40,9 @@ export const Upload = ({ onAnalysisReady }: { onAnalysisReady: (analysis: Analys
             <label
                 ref={ref}
                 className={cn(
-                    'relative h-[450px] transition-colors ease-in-out duration-300 flex flex-col p-5 max-sm:p-3 items-center justify-center gap-1 box-border border-2 border-dashed rounded-[14px]',
+                    'relative h-[450px] transition-colors ease-in-out border-primary-white-secondary/30 duration-300 flex flex-col p-5 max-sm:p-3 items-center justify-center gap-1 box-border border-2 border-dashed rounded-[14px]',
                     isOvered && !isLoading && (dropZoneError ? 'border-primary-error bg-primary-error/10' : 'border-primary-blue bg-primary-blue-transparent'),
-                    dropZoneError ? 'border-primary-error/50' : 'border-primary-white-secondary/30',
+                    dropZoneError && 'border-primary-error/50',
                     !isLoading && !isReachedLimit && 'cursor-pointer',
                     !isLoading && !isReachedLimit && (dropZoneError ? 'hover:border-primary-error' : 'hover:border-primary-blue')
                 )}
@@ -115,36 +115,34 @@ export const Upload = ({ onAnalysisReady }: { onAnalysisReady: (analysis: Analys
                         />
                     </div>
                 ) : (
-                    <>
-                        <div className='flex flex-col items-center gap-2'>
-                            <Typography className='flex size-16 mb-2 bg-primary-blue-transparent rounded-full items-center justify-center'>
-                                {isReachedLimit ? (
-                                    <ClockIcon className='size-10 text-primary-blue' />
-                                ) : (
-                                    <UploadIcon className='size-10 text-primary-blue' />
-                                )}
-                            </Typography>
+                    <div className='flex flex-col items-center gap-2'>
+                        <Typography className='flex size-16 mb-2 bg-primary-blue-transparent rounded-full items-center justify-center'>
                             {isReachedLimit ? (
-                                <>
-                                    <Typography as='h2' size='2xl' weight='semibold'>
-                                        Достигнут лимит запросов
-                                    </Typography>
-                                    <Typography as='p' variant='secondary' weight='thin' className='text-pretty'>
-                                        Запросы обнулятся через 24 часа.
-                                    </Typography>
-                                </>
+                                <ClockIcon className='size-10 text-primary-blue' />
                             ) : (
-                                <>
-                                    <Typography as='h2' size='2xl' weight='semibold'>
-                                        {isOvered ? 'Отпустите изображение' : 'Загрузите изображение'}
-                                    </Typography>
-                                    <Typography as='p' variant='secondary' weight='thin' className='text-pretty'>
-                                        Поддерживаемые форматы: {ALLOWED_TYPES.join(', ').toUpperCase()}
-                                    </Typography>
-                                </>
+                                <UploadIcon className='size-10 text-primary-blue' />
                             )}
-                        </div>
-                    </>
+                        </Typography>
+                        {isReachedLimit ? (
+                            <>
+                                <Typography as='h2' size='2xl' weight='semibold'>
+                                    Достигнут лимит запросов
+                                </Typography>
+                                <Typography as='p' variant='secondary' weight='thin' className='text-pretty'>
+                                    Запросы обнулятся через 24 часа
+                                </Typography>
+                            </>
+                        ) : (
+                            <>
+                                <Typography as='h2' size='2xl' weight='semibold'>
+                                    {isOvered ? 'Отпустите изображение' : 'Загрузите изображение'}
+                                </Typography>
+                                <Typography as='p' variant='secondary' weight='thin' className='text-pretty'>
+                                    Поддерживаемые форматы: {ALLOWED_TYPES.join(', ').toUpperCase()}
+                                </Typography>
+                            </>
+                        )}
+                    </div>
                 )}
             </label>
             {dropZoneError && (
