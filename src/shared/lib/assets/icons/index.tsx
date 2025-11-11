@@ -10,3 +10,6 @@ export { ReactComponent as LoaderIcon } from './loader.svg';
 export { ReactComponent as ChevronIcon } from './chevron.svg';
 export { ReactComponent as PulseIcon } from './pulse.svg';
 export { ReactComponent as CloseIcon } from './close.svg';
+export { ReactComponent as StarIcon } from './star.svg';
+export { ReactComponent as HomeIcon } from './home.svg';
+export { ReactComponent as StoreIcon } from './store.svg';
