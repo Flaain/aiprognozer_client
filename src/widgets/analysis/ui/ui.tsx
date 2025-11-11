@@ -1,24 +1,9 @@
-import { useEffect } from 'react';
-
-import { backButton } from '@telegram-apps/sdk-react';
-
+import { useBackButtonTelegram } from '@/shared/hooks/useBackButton';
 import type { Analysis as IAnalysis } from '@/shared/model/types';
 import { Typography } from '@/shared/ui/typography';
 
-export const Analysis = ({ analysis, onBack }: { analysis: IAnalysis; onBack: () => void }) => {
-    useEffect(() => {
-        !backButton.isMounted() && backButton.mount();
-
-        backButton.show();
-
-        backButton.onClick(onBack);
-
-        return () => {
-            backButton.offClick(onBack);
-            backButton.hide();
-            backButton.unmount();
-        }
-    }, []);
+export const Analysis = ({ analysis, onBack }: { analysis: IAnalysis; onBack: () => void; }) => {
+    useBackButtonTelegram(onBack);
 
     return (
         <div className='flex flex-col gap-5'>

@@ -1,7 +1,10 @@
+import { useBackButtonTelegram } from '@/shared/hooks/useBackButton';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { Typography } from '@/shared/ui/typography';
 
-export const AnalysisSkeleton = () => {
+export const AnalysisSkeleton = ({ onBack }: { onBack: () => void }) => {
+    useBackButtonTelegram(onBack);
+
     return (
         <div className='flex flex-col gap-5'>
             <div className='flex items-start justify-start flex-col gap-2'>
