@@ -1,10 +1,10 @@
 export type Setter<T> = (state: Partial<T> | ((state: T) => Partial<T>)) => void;
-export type ApiExceptionCode = 'REFERALL_NOT_EXISTS' | 'REFERALL_ALREADY_TAKEN' | 'ALREADY_VERIFIED';
+export type ApiExceptionCode = 'REFERALL_NOT_EXISTS' | 'REFERALL_ALREADY_TAKEN' | 'ALREADY_VERIFIED' | 'REQUEST_LIMIT_EXCEEDED';
 
 export interface User {
     _id: string;
     telegram_id: string;
-    last_request_at: Date;
+    first_request_at?: string;
     request_count: number;
     request_limit: number;
     isBanned: boolean;
