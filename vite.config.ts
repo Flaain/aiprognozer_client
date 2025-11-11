@@ -9,7 +9,7 @@ import { defineConfig } from 'vite';
 export default defineConfig({
     plugins: [svgr({ dimensions: false, svgo: false, typescript: true }), react(), tailwindcss()],
     server: {
-        allowedHosts: ['x4p5mq-85-172-95-112.ru.tuna.am']
+        allowedHosts: ['wfmb85-85-172-90-152.ru.tuna.am']
     },
     resolve: {
         alias: {

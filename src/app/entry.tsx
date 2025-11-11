@@ -1,37 +1,43 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
-import { init as initSDK, viewport, setDebug, miniApp, initData } from '@telegram-apps/sdk-react';
+import { init as initSDK, viewport, setDebug, miniApp, initData, isTMA } from '@telegram-apps/sdk-react';
 
 import { login } from '@/features/login';
 
 import { useTheme, getTheme } from '@/entities/theme';
+
+import { NotTMA } from '@/shared/ui/not-tma';
 
 import { App } from './app';
 
 import './styles/index.css';
 
 const init = async (debug: boolean) => {
-    setDebug(debug);
+    if (isTMA()) {
+        setDebug(debug);
 
-    initSDK();
+        initSDK();
 
-    if (!miniApp.isSupported()) {
-        throw new Error('MINIAPP_NOT_SUPPORTED');
+        if (!miniApp.isSupported()) {
+            throw new Error('MINIAPP_NOT_SUPPORTED');
+        }
+
+        await viewport.mount();
+
+        miniApp.mountSync();
+
+        viewport.bindCssVars();
+        miniApp.bindCssVars();
+
+        initData.restore();
+
+        useTheme.getState().actions.changeTheme(getTheme());
+
+        login();
+    } else {
+        console.warn(`Приложение работает только внутри Telegram. Пожалуйста, откройте приложение из нашего бота - ${import.meta.env.VITE_BOT_URL}`);
     }
-
-    await viewport.mount();
-    
-    miniApp.mountSync();
-    
-    viewport.bindCssVars();
-    miniApp.bindCssVars();
-    
-    initData.restore();
-
-    useTheme.getState().actions.changeTheme(getTheme());
-
-    login();
 };
 
 try {
@@ -39,7 +45,7 @@ try {
 
     createRoot(document.getElementById('root')!).render(
         <StrictMode>
-            <App />
+            {isTMA() ? <App /> : <NotTMA />}
         </StrictMode>
     );
 } catch (error) {
