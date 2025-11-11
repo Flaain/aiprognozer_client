@@ -4,7 +4,7 @@ import { authApi } from '@/entities/auth';
 import { useSession } from '@/entities/session';
 import { useUser } from '@/entities/user';
 
-import Error400 from '@/shared/lib/assets/errors/400.png';
+import ErrorSrc from '@/shared/lib/assets/errors/something_went_wrong.png';
 
 import { Container } from '@/shared/ui/container';
 import { LoadingButton } from '@/shared/ui/loading-button';
@@ -29,19 +29,19 @@ export const LoginError = () => {
     };
 
     return (
-        <Container className='flex flex-col relative items-center max-w-[400px] justify-center'>
+        <Container className='flex flex-col relative items-center max-w-[400px] justify-center min-h-dvh'>
             <Typography as='h1' variant='primary' size='4xl' weight='bold' className='mb-2'>
                 Произошла ошибка
             </Typography>
             <Typography as='p' variant='secondary' size='md' weight='thin' className='max-w-[300px] text-pretty'>
                 При получении профиля произошла непредвиденная ошибка. Пожалуйста, попробуйте еще раз
             </Typography>
-            <img src={Error400} className='w-full mt-10' alt='400 error image' />
+            <img src={ErrorSrc} className='w-full mt-10' alt='error image' />
             <LoadingButton
                 cta={!isRefetch}
                 onClick={handleRefetch}
                 isLoading={isRefetch}
-                className='sticky bottom-0 mt-auto'
+                className='mt-10'
             >
                 Попробовать еще раз
             </LoadingButton>
