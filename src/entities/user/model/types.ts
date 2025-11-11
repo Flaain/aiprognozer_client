@@ -6,6 +6,7 @@ export interface UserStore {
         onSignin: (user: User) => void;
         onVerify: () => void;
         updateRequestCount: (action: 'inc' | 'dec') => void;
-        updateLastRequestAt: (date: Date) => void;
+        updateFirstRequestAt: (date: string) => void;
+        onRequestLimitExceeded: () => void;
     };
 }
