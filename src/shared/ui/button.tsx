@@ -10,7 +10,7 @@ const buttonVariants = cva(
     {
         variants: {
             variant: {
-                icon: 'bg-transparent hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-transparent',
+                icon: 'bg-transparent',
                 error: 'bg-primary-error text-primary-white hover:bg-primary-error/80 focus-visible:bg-primary-error/80 focus-visible:ring-primary-error',
                 default: 'bg-primary-blue text-primary-white hover:bg-primary-blue/80 focus-visible:bg-primary-blue/80 focus-visible:ring-primary-blue'
             },
@@ -48,7 +48,7 @@ function Button({
             data-slot='button'
             className={cn(
                 buttonVariants({ variant, size, className }),
-                cta && 'before:absolute before:inset-0 before:rounded-md before:opacity-0 before:animate-shimmer before:bg-gradient-to-r before:from-transparent before:via-primary-white/50 before:to-transparent overflow-hidden isolate before:border-y before:border-primary-white/20'
+                cta && 'before:absolute before:inset-0 before:opacity-0 before:animate-shimmer before:bg-gradient-to-r before:from-transparent before:via-primary-white/50 before:to-transparent overflow-hidden isolate before:border-y before:border-primary-white/20'
             )}
             {...props}
         />
