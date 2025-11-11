@@ -14,15 +14,15 @@ import { Typography } from '@/shared/ui/typography';
 import { ALLOWED_TYPES, LOADING_WORDS } from '../model/constants';
 import { useUpload } from '../model/useUpload';
 
-export const Upload = ({ onAnalysisReady }: { onAnalysisReady: (analysis: Analysis) => void }) => {
+export const Upload = ({ onAnalysisReady }: { onAnalysisReady?: (analysis: Analysis) => void }) => {
     const {
         onChange,
         onStartAnalysis,
         handleRemove,
         mainButtonRef,
         sportType,
-        dropZoneError,
-        setDropZoneError,
+        error,
+        setError,
         onSportTypeChange,
         delta,
         request_limit,
@@ -41,10 +41,10 @@ export const Upload = ({ onAnalysisReady }: { onAnalysisReady: (analysis: Analys
                 ref={ref}
                 className={cn(
                     'relative h-[450px] transition-colors ease-in-out border-primary-white-secondary/30 duration-300 flex flex-col p-5 max-sm:p-3 items-center justify-center gap-1 box-border border-2 border-dashed rounded-[14px]',
-                    isOvered && !isLoading && (dropZoneError ? 'border-primary-error bg-primary-error/10' : 'border-primary-blue bg-primary-blue-transparent'),
-                    dropZoneError && 'border-primary-error/50',
+                    isOvered && !isLoading && (error ? 'border-primary-error bg-primary-error/10' : 'border-primary-blue bg-primary-blue-transparent'),
+                    error && 'border-primary-error/50',
                     !isLoading && !isReachedLimit && 'cursor-pointer',
-                    !isLoading && !isReachedLimit && (dropZoneError ? 'hover:border-primary-error' : 'hover:border-primary-blue')
+                    !isLoading && !isReachedLimit && (error ? 'hover:border-primary-error' : 'hover:border-primary-blue')
                 )}
             >
                 <Input
@@ -145,14 +145,14 @@ export const Upload = ({ onAnalysisReady }: { onAnalysisReady: (analysis: Analys
                     </div>
                 )}
             </label>
-            {dropZoneError && (
+            {error && (
                 <div
-                    onClick={() => setDropZoneError(null)}
+                    onClick={() => setError(null)}
                     className='flex cursor-pointer items-start justify-start p-5 max-sm:p-3 relative bg-primary-error/10 rounded-[14px] border border-solid border-primary-error'
                 >
                     <AttentionIcon className='min-w-5 min-h-5 size-5 text-primary-error mr-3' />
                     <Typography variant='error' as='p' weight='thin' size='sm' className='text-pretty text-left'>
-                        {dropZoneError}
+                        {error}
                     </Typography>
                 </div>
             )}
@@ -179,13 +179,13 @@ export const Upload = ({ onAnalysisReady }: { onAnalysisReady: (analysis: Analys
             </div>
             <div
                 ref={mainButtonRef}
-                className='py-3 hidden z-10 bg-primary-dark sticky bottom-0 opacity-0 translate-y-10 transition-all duration-300 ease-in-out'
+                className='py-3 hidden z-10 bg-primary-dark opacity-0 max-sm:sticky max-sm:bottom-[calc(var(--navbar-height)+var(--tg-viewport-safe-area-inset-bottom))] translate-y-10 transition-all duration-200 ease-in-out'
             >
                 <LoadingButton
                     cta={!isLoading && !!image && !!sportType}
                     onClick={onStartAnalysis}
                     className='h-11'
-                    disabled={!image || !sportType}
+                    disabled={!image || !sportType || isLoading}
                     isLoading={isLoading}
                 >
                     <AiIcon className='text-primary-white size-5' />

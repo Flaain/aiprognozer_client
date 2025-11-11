@@ -1,6 +1,6 @@
 import type { SportType } from '@/features/sport-dropdown';
 
-import type { UseDropZoneErrorCode } from '@/shared/model/useDropZone';
+import type { UseDropZoneErrorCode } from '@/shared/hooks/useDropZone';
 
 export const ALLOWED_TYPES = ['jpg', 'jpeg', 'png'];
 
