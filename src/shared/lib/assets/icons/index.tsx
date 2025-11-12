@@ -13,3 +13,4 @@ export { ReactComponent as CloseIcon } from './close.svg';
 export { ReactComponent as StarIcon } from './star.svg';
 export { ReactComponent as HomeIcon } from './home.svg';
 export { ReactComponent as StoreIcon } from './store.svg';
+export { ReactComponent as ZipIcon } from './zip.svg';
