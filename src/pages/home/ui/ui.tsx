@@ -4,13 +4,13 @@ import { Analysis, AnalysisSkeleton } from '@/widgets/analysis';
 import { Upload, UploadSkeleton } from '@/widgets/upload';
 
 import type { Analysis as IAnalysis } from '@/shared/model/types';
-import { MainLayout } from '@/shared/ui/main-layout';
+import { Container } from '@/shared/ui/container';
 
 export const Home = () => {
     const [analysis, setAnalysis] = useState<IAnalysis | null>(null);
 
     return (
-        <MainLayout>
+        <Container as='div' className='grow-1'>
             {analysis ? (
                 <Suspense fallback={<AnalysisSkeleton onBack={() => setAnalysis(null)} />}>
                     <Analysis onBack={() => setAnalysis(null)} analysis={analysis} />
@@ -20,6 +20,7 @@ export const Home = () => {
                     <Upload onAnalysisReady={setAnalysis} />
                 </Suspense>
             )}
-        </MainLayout>
+            ;
+        </Container>
     );
 };
