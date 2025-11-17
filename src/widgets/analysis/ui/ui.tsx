@@ -1,5 +1,6 @@
 import { useBackButtonTelegram } from '@/shared/hooks/useBackButton';
 import type { Analysis as IAnalysis } from '@/shared/model/types';
+import { Counter } from '@/shared/ui/counter';
 import { Typography } from '@/shared/ui/typography';
 
 export const Analysis = ({ analysis, onBack }: { analysis: IAnalysis; onBack: () => void; }) => {
@@ -25,9 +26,7 @@ export const Analysis = ({ analysis, onBack }: { analysis: IAnalysis; onBack: ()
                     </Typography>
                 </div>
                 <div className='flex flex-col gap-1'>
-                    <Typography size='4xl' weight='bold' className='text-end max-md:text-start'>
-                        {analysis.prediction.probability}%
-                    </Typography>
+                    <Counter start={10} end={analysis.prediction.probability} />
                     <Typography as='p' variant='secondary' size='xl'>
                         уверенность ИИ
                     </Typography>
