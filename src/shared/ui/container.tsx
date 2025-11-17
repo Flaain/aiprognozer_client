@@ -9,7 +9,7 @@ export const Container = ({ as, children, className, ...rest }: ContainerProps) 
     const Component = as ?? 'section';
 
     return (
-        <Component {...rest} className={cn('px-5 max-w-[1064px] w-full box-border mx-auto pb-(--tg-viewport-safe-area-inset-bottom) pt-(--tg-viewport-safe-area-inset-top)', className)}>
+        <Component {...rest} className={cn('px-5 max-w-[1064px] w-full box-border mx-auto', className)}>
             {children}
         </Component>
     );

@@ -5,14 +5,14 @@ import { Typography } from './typography';
 
 export const NotTMA = () => {
     return (
-        <Container className='flex items-center flex-col justify-center'>
+        <Container className='flex items-center flex-col justify-center h-full'>
             <Typography as='h1' size='4xl' weight='bold'>
                 Ошибка инициализации
             </Typography>
             <Typography as='p' size='xl' variant='secondary' weight='thin'>
                 Приложение может быть запущено только из нашего бота в Telegram
             </Typography>
-            <img src={Error} className='max-w-80 max-h-80 size-full my-10' alt='error image' />
+            <img src={Error} className='my-10 size-auto' alt='error image' />
             <a
                 href={import.meta.env.VITE_BOT_URL}
                 target='_blank'
