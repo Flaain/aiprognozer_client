@@ -5,16 +5,16 @@ import { SportDropdown } from '@/features/sport-dropdown';
 import { AiIcon, AttentionIcon, ClockIcon, CloseIcon, PulseIcon, UploadIcon } from '@/shared/lib/assets/icons';
 
 import { cn } from '@/shared/lib/utils';
-import type { Analysis } from '@/shared/model/types';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { LoadingButton } from '@/shared/ui/loading-button';
 import { Typography } from '@/shared/ui/typography';
 
 import { ALLOWED_TYPES, LOADING_WORDS } from '../model/constants';
+import type { UploadProps } from '../model/types';
 import { useUpload } from '../model/useUpload';
 
-export const Upload = ({ onAnalysisReady }: { onAnalysisReady?: (analysis: Analysis) => void }) => {
+export const Upload = ({ onAnalysisReady }: UploadProps) => {
     const {
         onChange,
         onStartAnalysis,
@@ -35,12 +35,12 @@ export const Upload = ({ onAnalysisReady }: { onAnalysisReady?: (analysis: Analy
     } = useUpload(onAnalysisReady);
 
     return (
-        <div className='flex flex-col gap-5 w-full box-border relative'>
+        <div className='flex flex-col w-full box-border relative'>
             <SportDropdown onSelect={onSportTypeChange} value={sportType} disabled={isLoading || isReachedLimit} />
             <label
                 ref={ref}
                 className={cn(
-                    'relative h-[450px] transition-colors ease-in-out border-primary-white-secondary/30 duration-300 flex flex-col p-5 max-sm:p-3 items-center justify-center gap-1 box-border border-2 border-dashed rounded-[14px]',
+                    'mt-5 relative h-[450px] transition-colors ease-in-out border-primary-white-secondary/30 duration-300 flex flex-col p-5 max-sm:p-3 items-center justify-center gap-1 box-border border-2 border-dashed rounded-[14px]',
                     isOvered && !isLoading && (error ? 'border-primary-error bg-primary-error/10' : 'border-primary-blue bg-primary-blue-transparent'),
                     error && 'border-primary-error/50',
                     !isLoading && !isReachedLimit && 'cursor-pointer',
@@ -100,7 +100,7 @@ export const Upload = ({ onAnalysisReady }: { onAnalysisReady?: (analysis: Analy
                                 disabled={isLoading}
                                 variant='error'
                                 size='icon'
-                                className='ml-auto absolute max-sm:right-3 max-sm:top-3 right-5 top-5 z-10'
+                                className='ml-auto absolute rounded-tr-[14px] rounded-tl-none rounded-br-none max-sm:right-3 max-sm:top-3 right-5 top-5 z-10'
                                 onClick={handleRemove}
                             >
                                 <CloseIcon />
@@ -156,7 +156,7 @@ export const Upload = ({ onAnalysisReady }: { onAnalysisReady?: (analysis: Analy
                     </Typography>
                 </div>
             )}
-            <div className='flex flex-col gap-2 p-3 rounded-[14px] border border-solid border-primary-white-secondary/30'>
+            <div className='mt-5 flex flex-col gap-2 p-3 rounded-[14px] border border-solid border-primary-white-secondary/30'>
                 <div className='flex items-center justify-between'>
                     <div className='flex items-center gap-2'>
                         <PulseIcon className='size-5 text-primary-blue' />
@@ -179,7 +179,7 @@ export const Upload = ({ onAnalysisReady }: { onAnalysisReady?: (analysis: Analy
             </div>
             <div
                 ref={mainButtonRef}
-                className='py-3 hidden z-10 bg-primary-dark opacity-0 max-sm:sticky max-sm:bottom-[calc(var(--navbar-height)+var(--tg-viewport-safe-area-inset-bottom))] translate-y-10 transition-all duration-200 ease-in-out'
+                className='pt-5 hidden z-10 bg-primary-dark opacity-0 sticky bottom-0 translate-y-10 transition-all duration-200 ease-in-out'
             >
                 <LoadingButton
                     cta={!isLoading && !!image && !!sportType}
