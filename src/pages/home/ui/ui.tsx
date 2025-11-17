@@ -8,9 +8,9 @@ import { Container } from '@/shared/ui/container';
 
 export const Home = () => {
     const [analysis, setAnalysis] = useState<IAnalysis | null>(null);
-
+    
     return (
-        <Container as='div' className='grow-1'>
+        <Container as='div' className='flex-1 overflow-y-auto no-scrollbar'>
             {analysis ? (
                 <Suspense fallback={<AnalysisSkeleton onBack={() => setAnalysis(null)} />}>
                     <Analysis onBack={() => setAnalysis(null)} analysis={analysis} />
@@ -20,7 +20,6 @@ export const Home = () => {
                     <Upload onAnalysisReady={setAnalysis} />
                 </Suspense>
             )}
-            ;
         </Container>
     );
 };
