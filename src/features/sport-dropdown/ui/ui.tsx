@@ -33,7 +33,7 @@ export const SportDropdown = ({ value, disabled, onSelect }: SportDropdownProps)
                     )}
                 >
                     <Typography className='select-none'>
-                        {value ? titles[value] : 'Выберите вид спорта для анализа'}
+                        {value ? titles[value] : 'Выберите спорт для анализа'}
                     </Typography>
                     <ChevronIcon
                         className={cn(
