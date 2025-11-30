@@ -7,4 +7,6 @@ export interface StoreSkeletonProps {
     isError?: boolean;
     refetch?: () => void;
     isRefetching?: boolean;
+    errorTitle?: string;
+    errorDescription?: string;
 }
