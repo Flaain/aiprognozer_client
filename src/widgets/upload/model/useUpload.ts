@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 
+import { hapticFeedbackImpactOccurred } from '@telegram-apps/sdk-react';
 import { isAxiosError } from 'axios';
 import { useShallow } from 'zustand/shallow';
 
@@ -20,7 +21,7 @@ export const useUpload = (onAnalysisReady?: (analysis: Analysis) => void) => {
     const [sportType, setSportType] = useState<SportType | null>(null);
     const [error, setError] = useState<string | null>(null);
     
-    const { request_count, request_limit } = useUser(useShallow(userSelector));
+    const { request_count, request_limit, isUnlimited } = useUser(useShallow(userSelector));
     const { updateRequestCount, onRequestLimitExceeded, updateFirstRequestAt } = useUser(useShallow(userActionsSelector));
 
     const mainButtonRef = useRef<HTMLDivElement>(null);
@@ -34,8 +35,10 @@ export const useUpload = (onAnalysisReady?: (analysis: Analysis) => void) => {
 
             setError(null);
             setIsLoading(true);
+            
+            hapticFeedbackImpactOccurred('medium');
 
-            updateRequestCount('inc');
+            !isUnlimited && updateRequestCount('inc');
 
             const form = new FormData();
 
@@ -57,7 +60,7 @@ export const useUpload = (onAnalysisReady?: (analysis: Analysis) => void) => {
                 setError('Превышен лимит запросов');
             } else {
                 setError('При выполнении запроса произошла ошибка');
-                updateRequestCount('dec');
+                !isUnlimited && updateRequestCount('dec');
             }
         } finally {
             setIsLoading(false);

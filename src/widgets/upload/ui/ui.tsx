@@ -1,6 +1,9 @@
 import { Fragment } from 'react/jsx-runtime';
+import { useShallow } from 'zustand/shallow';
 
 import { SportDropdown } from '@/features/sport-dropdown';
+
+import { userSelector, useUser } from '@/entities/user';
 
 import { AiIcon, AttentionIcon, ClockIcon, CloseIcon, PulseIcon, UploadIcon } from '@/shared/lib/assets/icons';
 
@@ -34,6 +37,8 @@ export const Upload = ({ onAnalysisReady }: UploadProps) => {
         isLoading
     } = useUpload(onAnalysisReady);
 
+    const { isUnlimited } = useUser(useShallow(userSelector));
+
     return (
         <div className='flex flex-col w-full box-border relative'>
             <SportDropdown onSelect={onSportTypeChange} value={sportType} disabled={isLoading || isReachedLimit} />
@@ -41,10 +46,16 @@ export const Upload = ({ onAnalysisReady }: UploadProps) => {
                 ref={ref}
                 className={cn(
                     'mt-5 relative h-[450px] transition-colors ease-in-out border-primary-white-secondary/30 duration-300 flex flex-col p-5 max-sm:p-3 items-center justify-center gap-1 box-border border-2 border-dashed rounded-[14px]',
-                    isOvered && !isLoading && (error ? 'border-primary-error bg-primary-error/10' : 'border-primary-blue bg-primary-blue-transparent'),
+                    isOvered &&
+                        !isLoading &&
+                        (error
+                            ? 'border-primary-error bg-primary-error/10'
+                            : 'border-primary-blue bg-primary-blue-transparent'),
                     error && 'border-primary-error/50',
                     !isLoading && !isReachedLimit && 'cursor-pointer',
-                    !isLoading && !isReachedLimit && (error ? 'hover:border-primary-error' : 'hover:border-primary-blue')
+                    !isLoading &&
+                        !isReachedLimit &&
+                        (error ? 'hover:border-primary-error' : 'hover:border-primary-blue')
                 )}
             >
                 <Input
@@ -148,7 +159,7 @@ export const Upload = ({ onAnalysisReady }: UploadProps) => {
             {error && (
                 <div
                     onClick={() => setError(null)}
-                    className='flex cursor-pointer items-start justify-start p-5 max-sm:p-3 relative bg-primary-error/10 rounded-[14px] border border-solid border-primary-error'
+                    className='mt-5 flex cursor-pointer items-start justify-start p-5 max-sm:p-3 relative bg-primary-error/10 rounded-[14px] border border-solid border-primary-error'
                 >
                     <AttentionIcon className='min-w-5 min-h-5 size-5 text-primary-error mr-3' />
                     <Typography variant='error' as='p' weight='thin' size='sm' className='text-pretty text-left'>
@@ -156,27 +167,29 @@ export const Upload = ({ onAnalysisReady }: UploadProps) => {
                     </Typography>
                 </div>
             )}
-            <div className='mt-5 flex flex-col gap-2 p-3 rounded-[14px] border border-solid border-primary-white-secondary/30'>
-                <div className='flex items-center justify-between'>
-                    <div className='flex items-center gap-2'>
-                        <PulseIcon className='size-5 text-primary-blue' />
-                        <Typography variant='secondary' weight='thin'>
-                            Доступно запросов
+            {!isUnlimited && (
+                <div className='mt-5 flex flex-col gap-2 p-3 rounded-[14px] border border-solid border-primary-white-secondary/30'>
+                    <div className='flex items-center justify-between'>
+                        <div className='flex items-center gap-2'>
+                            <PulseIcon className='size-5 text-primary-blue' />
+                            <Typography variant='secondary' weight='thin'>
+                                Доступно запросов
+                            </Typography>
+                        </div>
+                        <Typography variant='secondary' weight='medium'>
+                            {delta} / {request_limit}
                         </Typography>
                     </div>
-                    <Typography variant='secondary' weight='medium'>
-                        {delta} / {request_limit}
-                    </Typography>
-                </div>
-                <div className='flex items-center'>
-                    <div className='grow-1 h-1.5 bg-primary-white-secondary/30 rounded-full relative'>
-                        <div
-                            className='absoute h-1.5 bg-primary-blue rounded-full transition-all duration-1000 ease-in-out'
-                            style={{ width: `${percent}%` }}
-                        ></div>
+                    <div className='flex items-center'>
+                        <div className='grow-1 h-1.5 bg-primary-white-secondary/30 rounded-full relative'>
+                            <div
+                                className='absoute h-1.5 bg-primary-blue rounded-full transition-all duration-1000 ease-in-out'
+                                style={{ width: `${percent}%` }}
+                            ></div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            )}
             <div
                 ref={mainButtonRef}
                 className='pt-5 hidden z-10 bg-primary-dark opacity-0 sticky bottom-0 translate-y-10 transition-all duration-200 ease-in-out'
