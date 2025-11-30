@@ -1,10 +1,12 @@
 import { useState } from 'react';
 
+import { Player } from '@lottiefiles/react-lottie-player';
+
 import { authApi } from '@/entities/auth';
 import { useSession } from '@/entities/session';
 import { useUser } from '@/entities/user';
 
-import ErrorSrc from '@/shared/lib/assets/errors/something_went_wrong.png';
+import CatEmoji from '@/shared/lib/assets/lottie/emojies/cat.json';
 
 import { Container } from '@/shared/ui/container';
 import { LoadingButton } from '@/shared/ui/loading-button';
@@ -36,7 +38,7 @@ export const LoginError = () => {
             <Typography as='p' variant='secondary' size='md' weight='thin' className='max-w-[300px] text-pretty'>
                 При получении профиля произошла непредвиденная ошибка. Пожалуйста, попробуйте еще раз
             </Typography>
-            <img src={ErrorSrc} className='w-full mt-10' alt='error image' />
+            <Player src={CatEmoji} loop autoplay className='max-h-[400px] max-w-[400px] size-full' />
             <LoadingButton
                 cta={!isRefetch}
                 onClick={handleRefetch}
