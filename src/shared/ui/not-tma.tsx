@@ -1,18 +1,22 @@
-import Error from '@/shared/lib/assets/errors/something_went_wrong.png';
+import { Player } from '@lottiefiles/react-lottie-player';
+
+import CryingEmoji from '@/shared/lib/assets/lottie/emojies/crying.json';
 
 import { Container } from './container';
 import { Typography } from './typography';
 
 export const NotTMA = () => {
     return (
-        <Container className='flex items-center flex-col justify-center h-full'>
-            <Typography as='h1' size='4xl' weight='bold'>
-                Ошибка инициализации
-            </Typography>
-            <Typography as='p' size='xl' variant='secondary' weight='thin'>
-                Приложение может быть запущено только из нашего бота в Telegram
-            </Typography>
-            <img src={Error} className='my-10 size-auto' alt='error image' />
+        <Container className='flex items-center flex-col justify-center h-full gap-10'>
+            <div className='flex flex-col gap-2'>
+                <Typography as='h1' size='4xl' weight='bold'>
+                    Ошибка инициализации
+                </Typography>
+                <Typography as='p' size='xl' variant='secondary' weight='thin'>
+                    Приложение может быть запущено только из нашего бота в Telegram
+                </Typography>
+            </div>
+            <Player src={CryingEmoji} loop autoplay className='max-h-[300px] h-full' />
             <a
                 href={import.meta.env.VITE_BOT_URL}
                 target='_blank'
