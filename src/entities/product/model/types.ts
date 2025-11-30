@@ -8,10 +8,16 @@ export interface Product {
     slug: string;
     type: ProductType;
     canBuy?: boolean;
-    lastBuyAt: string;
+    payedAt?: string;
     prev?: string | null;
     next?: string | null;
-    isLastProductWasPurchased?: boolean;
 }
 
 export type ProductType = keyof typeof PRODUCT_TYPE;
+
+export interface ProductProps {
+    product: Product;
+    as?: React.ElementType;
+    isPurchaseInProgress?: boolean;
+    onBuy: () => void;
+}

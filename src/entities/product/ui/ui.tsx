@@ -3,19 +3,15 @@ import { StarIcon } from '@/shared/lib/assets/icons';
 import { LoadingButton } from '@/shared/ui/loading-button';
 import { Typography } from '@/shared/ui/typography';
 
-import { PRODUCT_TYPE } from '../model/constants';
-import type { Product as IProduct } from '../model/types';
+import type { ProductProps } from '../model/types';
 
-import { DailyProduct } from './daily';
 
-export const Product = ({ product }: { product: IProduct }) => {
-    if (PRODUCT_TYPE[product.type] === 'DAILY') {
-        return <DailyProduct product={product} />;
-    }
+export const Product = ({ product, onBuy, as }: ProductProps) => {
+    const Component = as ?? 'div';
 
     return (
-        <div className='flex flex-col gap-4 bg-linear-to-br from-primary-dark-secondary to-transparent p-4 rounded-[14px]'>
-            <div className='flex flex-col items-start border-b border-primary-dark-secondary pb-4'>
+        <Component className='flex flex-col gap-4 bg-linear-to-br from-primary-dark-secondary to-transparent p-4 rounded-[14px]'>
+            <div className='flex flex-col gap-2 items-start border-b border-primary-dark-secondary pb-4'>
                 <Typography size='md' weight='semibold'>
                     {product.name}
                 </Typography>
@@ -30,10 +26,10 @@ export const Product = ({ product }: { product: IProduct }) => {
                         {product.price}
                     </Typography>
                 </div>
-                <LoadingButton className='max-w-[200px] max-md:max-w-[150px]' size='lg'>
+                <LoadingButton onClick={onBuy} className='max-w-[200px] max-md:max-w-[150px]' size='lg'>
                     Купить
                 </LoadingButton>
             </div>
-        </div>
+        </Component>
     );
 };
