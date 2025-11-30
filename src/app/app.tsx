@@ -11,6 +11,7 @@ import { sessionFlagsSelector, useSession } from '@/entities/session';
 import { userSelector, useUser } from '@/entities/user';
 
 import { ScreenProvider } from '@/shared/providers/screen/provider';
+import { SocketProvider } from '@/shared/providers/socket/provider';
 import { Loader } from '@/shared/ui/loader';
 
 export const App = () => {
@@ -30,5 +31,9 @@ export const App = () => {
         );
     }
 
-    return <ScreenProvider screens={screens} />;
+    return (
+        <SocketProvider>
+            <ScreenProvider screens={screens} />;
+        </SocketProvider>
+    );
 };
