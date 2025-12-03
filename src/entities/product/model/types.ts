@@ -1,4 +1,4 @@
-import type { ProductEffectType, ProductSlugs } from '@/shared/model/types';
+import type { ProductEffectType } from '@/shared/model/types';
 
 import type { PRODUCT_TYPE } from './constants';
 
@@ -7,7 +7,7 @@ export interface Product {
     name: string;
     description: string;
     price: number;
-    slug: ProductSlugs;
+    slug: string;
     type: ProductType;
     canBuy?: boolean;
     payedAt?: string;

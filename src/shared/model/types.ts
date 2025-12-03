@@ -1,5 +1,8 @@
+import type { PRODUCT_EFFECT_TYPE } from "./constants";
+
 export type Setter<T> = (state: Partial<T> | ((state: T) => Partial<T>)) => void;
 export type ApiExceptionCode = 'REFERALL_NOT_EXISTS' | 'REFERALL_ALREADY_TAKEN' | 'ALREADY_VERIFIED' | 'REQUEST_LIMIT_EXCEEDED';
+export type ProductEffectType = typeof PRODUCT_EFFECT_TYPE[keyof typeof PRODUCT_EFFECT_TYPE];
 
 export interface User {
     _id: string;
@@ -11,6 +14,8 @@ export interface User {
     isUnlimited: boolean;
     isVerified: boolean;
     referall?: string;
+
+    [key: string]: any; // temp solution
 }
 
 export interface ApiDefaultSuccessResponse {
