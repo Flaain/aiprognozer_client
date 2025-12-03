@@ -22,6 +22,7 @@ export const Store = () => {
         isStoreEmpty,
         onDailyTimerExpired,
         refetch,
+        subscribe,
         handleBuyProduct
     } = useStore();
 
@@ -50,6 +51,7 @@ export const Store = () => {
                     {store?.DAILY.map((product) => (
                         <Suspense key={product._id} fallback={<ProductSkeleton type='DAILY' />}>
                             <DailyProduct
+                                subscribe={subscribe}
                                 onBuy={() => handleBuyProduct(product)}
                                 product={product}
                                 isPurchaseInProgress={processingIds.includes(product._id)}
@@ -68,6 +70,7 @@ export const Store = () => {
                     {store?.LADDER.map((product) => (
                         <Suspense key={product._id} fallback={<ProductSkeleton type='LADDER' />}>
                             <Product
+                                subscribe={subscribe}
                                 onBuy={() => handleBuyProduct(product)}
                                 product={product}
                                 isPurchaseInProgress={processingIds.includes(product._id)}

@@ -1,16 +1,17 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { openInvoice } from '@telegram-apps/sdk-react';
 import { useShallow } from 'zustand/shallow';
 
 import { PRODUCT_TYPE, type IProduct } from '@/entities/product';
+import { useUser } from '@/entities/user';
 
 import { useSocket } from '@/shared/providers/socket/context';
 
 import { storeApi } from '../api';
 
 import { STORE_EVENTS } from './constants';
-import type { Store } from './types';
+import type { BuyedProduct, Store } from './types';
 
 export const useStore = () => {
     const [store, setStore] = useState<Store>(null!);
@@ -22,12 +23,33 @@ export const useStore = () => {
     const [processingIds, setProcessingIds] = useState<Array<string>>([]);
 
     const { socket, isConnected } = useSocket(useShallow((state) => state));
+    
+    const applyProductEffect = useUser(useShallow((state) => state.actions.applyProductEffect));
+
+    const subscribers = useRef<Set<(event: string, _id: string) => void>>(new Set());
+
+    const isStoreEmpty = useMemo(() => (store ? Object.values(store).every((products) => !products.length) : !isLoading && !isError), [isLoading, isError, store]);
 
     useEffect(() => {
         fetchStore('init');
 
-        socket.on(STORE_EVENTS.PRODUCT_BUY, (product: Required<Pick<IProduct, '_id' | 'type' | 'payedAt'>>, newProduct?: IProduct) => {
-            console.log('buy!', product);
+        socket.on(STORE_EVENTS.PRODUCT_BUY, (buyedProduct: BuyedProduct, newProduct?: IProduct) => {
+            const key = PRODUCT_TYPE[buyedProduct.type];
+
+            setStore((prevState) => {
+                return {
+                    ...prevState,
+                    [key]: prevState[key]?.map((product) => {
+                        return product._id === buyedProduct._id ? key === 'LADDER' && newProduct ? newProduct : { ...product, canBuy: false, payedAt: buyedProduct.payedAt } : product;
+                    })
+                };
+            });
+            
+            setProcessingIds((prev) => prev.filter((id) => id !== buyedProduct._id));
+
+            applyProductEffect(buyedProduct.effect);
+
+            subscribers.current.forEach((subscriber) => subscriber(STORE_EVENTS.PRODUCT_BUY, buyedProduct._id));
         });
 
         return () => {
@@ -35,7 +57,11 @@ export const useStore = () => {
         };
     }, []);
 
-    const isStoreEmpty = useMemo(() => (store ? Object.values(store).every((products) => !products.length) : !isLoading && !isError), [isLoading, isError, store]);
+    const subscribe = (subscriber: (event: string, _id: string) => void) => {
+        subscribers.current.add(subscriber);
+
+        return () => subscribers.current.delete(subscriber);
+    }
 
     const onDailyTimerExpired = (_id: string) => {
         setStore((prev) => ({
@@ -58,7 +84,7 @@ export const useStore = () => {
                     [key]: acc?.[key] ? [...acc[key], product] : [product]
                 };
             }, null!));
-
+            
             setIsError(false);
         } catch (error) {
             setIsError(true);
@@ -76,12 +102,12 @@ export const useStore = () => {
 
             const status = await openInvoice(data, 'url');
 
-            if (status === 'paid' && !isConnected) {
-                // send poll request
+            if (status === 'paid') {
+            } else {
+                setProcessingIds((prev) => prev.filter((id) => id !== product._id));
             }
         } catch (error) {
             console.error(error);
-        } finally {
             setProcessingIds((prev) => prev.filter((id) => id !== product._id));
         }
     }
@@ -93,6 +119,7 @@ export const useStore = () => {
         processingIds,
         isRefetching,
         isLoading,
+        subscribe,
         handleBuyProduct,
         onDailyTimerExpired,
         refetch: () => fetchStore('refetch')
