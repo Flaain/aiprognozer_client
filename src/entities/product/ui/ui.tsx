@@ -6,7 +6,7 @@ import { Typography } from '@/shared/ui/typography';
 import type { ProductProps } from '../model/types';
 
 
-export const Product = ({ product, onBuy, as }: ProductProps) => {
+export const Product = ({ product, isPurchaseInProgress, onBuy, as }: ProductProps) => {
     const Component = as ?? 'div';
 
     return (
@@ -26,7 +26,12 @@ export const Product = ({ product, onBuy, as }: ProductProps) => {
                         {product.price}
                     </Typography>
                 </div>
-                <LoadingButton onClick={onBuy} className='max-w-[200px] max-md:max-w-[150px]' size='lg'>
+                <LoadingButton
+                    onClick={onBuy}
+                    isLoading={isPurchaseInProgress}
+                    className='max-w-[200px] max-md:max-w-[150px]'
+                    size='lg'
+                >
                     Купить
                 </LoadingButton>
             </div>
