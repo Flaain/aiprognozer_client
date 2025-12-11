@@ -41,7 +41,7 @@ export const Store = () => {
     }
     
     return (
-        <Container as='div' className='flex flex-col gap-10 pt-5 flex-1 overflow-y-auto'>
+        <Container as='div' className='flex flex-col gap-10 flex-1 overflow-y-auto'>
             {store?.DAILY && (
                 <StoreWindow
                     title='Ежедневное предложение'

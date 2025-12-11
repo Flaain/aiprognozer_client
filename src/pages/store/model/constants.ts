@@ -1,3 +1,3 @@
 export const STORE_EVENTS = {
-    PRODUCT_BUY: 'product_buy'
+    PRODUCT_BUY: 'store:product_buy'
 } as const;

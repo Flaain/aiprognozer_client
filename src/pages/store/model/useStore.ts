@@ -3,15 +3,16 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { openInvoice } from '@telegram-apps/sdk-react';
 import { useShallow } from 'zustand/shallow';
 
-import { PRODUCT_TYPE, type IProduct } from '@/entities/product';
-import { useUser } from '@/entities/user';
+import { PRODUCT_EVENTS } from '@/entities/product';
 
+import { PRODUCT_TYPE } from '@/shared/model/constants';
+import type { BuyedProduct, Product } from '@/shared/model/types';
 import { useSocket } from '@/shared/providers/socket/context';
 
 import { storeApi } from '../api';
 
 import { STORE_EVENTS } from './constants';
-import type { BuyedProduct, Store } from './types';
+import type { Store } from './types';
 
 export const useStore = () => {
     const [store, setStore] = useState<Store>(null!);
@@ -23,8 +24,6 @@ export const useStore = () => {
     const [processingIds, setProcessingIds] = useState<Array<string>>([]);
 
     const { socket, isConnected } = useSocket(useShallow((state) => state));
-    
-    const applyProductEffect = useUser(useShallow((state) => state.actions.applyProductEffect));
 
     const subscribers = useRef<Set<(event: string, _id: string) => void>>(new Set());
 
@@ -33,23 +32,39 @@ export const useStore = () => {
     useEffect(() => {
         fetchStore('init');
 
-        socket.on(STORE_EVENTS.PRODUCT_BUY, (buyedProduct: BuyedProduct, newProduct?: IProduct) => {
+        socket.on(STORE_EVENTS.PRODUCT_BUY, ({ buyedProduct, newProduct, recalculatedPrices }: { buyedProduct: BuyedProduct, newProduct?: Product, recalculatedPrices?: Record<string, number> }) => {
             const key = PRODUCT_TYPE[buyedProduct.type];
 
             setStore((prevState) => {
-                return {
-                    ...prevState,
-                    [key]: prevState[key]?.map((product) => {
-                        return product._id === buyedProduct._id ? key === 'LADDER' && newProduct ? newProduct : { ...product, canBuy: false, payedAt: buyedProduct.payedAt } : product;
+                if (recalculatedPrices) {
+                    const nextState: any = {};
+                    
+                    Object.entries(prevState).forEach(([key, products]) => {
+                        nextState[key] = products.map((product) => {
+                            const newPrice = recalculatedPrices[product.slug];
+                            
+                            if (product._id === buyedProduct._id) {
+                                return key === 'LADDER' && newProduct ? newProduct : { ...product, canBuy: false, payedAt: buyedProduct.payedAt }
+                            }
+                            
+                            return newPrice ? { ...product, price: newPrice } : product;
+                        })
                     })
-                };
+                    
+                    return nextState;
+                } else {
+                    return {
+                        ...prevState,
+                        [key]: prevState[key]?.map((product) => {
+                            return product._id === buyedProduct._id ? key === 'LADDER' && newProduct ? newProduct : { ...product, canBuy: false, payedAt: buyedProduct.payedAt } : product;
+                        })
+                    };
+                }
             });
             
             setProcessingIds((prev) => prev.filter((id) => id !== buyedProduct._id));
 
-            applyProductEffect(buyedProduct.effect);
-
-            subscribers.current.forEach((subscriber) => subscriber(STORE_EVENTS.PRODUCT_BUY, buyedProduct._id));
+            subscribers.current.forEach((subscriber) => subscriber(PRODUCT_EVENTS.PRODUCT_BUY, buyedProduct._id));
         });
 
         return () => {
@@ -94,7 +109,7 @@ export const useStore = () => {
         }
     }, []);
 
-    const handleBuyProduct = async (product: IProduct) => {
+    const handleBuyProduct = async (product: Product) => {
         try {
             setProcessingIds((prev) => [...prev, product._id]);
 

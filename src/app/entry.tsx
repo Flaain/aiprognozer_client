@@ -1,7 +1,15 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
-import { init as initSDK, viewport, setDebug, miniApp, initData, isTMA } from '@telegram-apps/sdk-react';
+import {
+    init as initSDK,
+    viewport,
+    setDebug,
+    miniApp,
+    initData,
+    isTMA,
+    retrieveLaunchParams
+} from '@telegram-apps/sdk-react';
 
 import { login } from '@/features/login';
 
@@ -25,6 +33,12 @@ const init = async (debug: boolean) => {
 
         await viewport.mount();
 
+        if (retrieveLaunchParams().tgWebAppPlatform !== 'tdesktop' && viewport.requestFullscreen.isAvailable()) {
+            await viewport.requestFullscreen();
+        } else {
+            document.documentElement.style.setProperty('--pt-main', '0px');
+        }
+
         miniApp.mountSync();
 
         viewport.bindCssVars();
@@ -36,18 +50,18 @@ const init = async (debug: boolean) => {
 
         login();
     } else {
-        console.warn(`Приложение работает только внутри Telegram. Пожалуйста, откройте приложение из нашего бота - ${import.meta.env.VITE_BOT_URL}`);
+        console.warn(
+            `Приложение работает только внутри Telegram. Пожалуйста, откройте приложение из нашего бота - ${
+                import.meta.env.VITE_BOT_URL
+            }`
+        );
     }
 };
 
 try {
     init(import.meta.env.VITE_ENV === 'development');
 
-    createRoot(document.getElementById('root')!).render(
-        <StrictMode>
-            {isTMA() ? <App /> : <NotTMA />}
-        </StrictMode>
-    );
+    createRoot(document.getElementById('root')!).render(<StrictMode>{isTMA() ? <App /> : <NotTMA />}</StrictMode>);
 } catch (error) {
     console.error('Something went wrong while initializing the app', error);
 }

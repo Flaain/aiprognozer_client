@@ -6,6 +6,7 @@ import { useTimer } from '@/shared/hooks/useTimer';
 import { LoadingButton } from '@/shared/ui/loading-button';
 import { Typography } from '@/shared/ui/typography';
 
+import { PRODUCT_EVENTS } from '../model/constants';
 import type { ProductProps } from '../model/types';
 
 const $24h = 1000 * 60 * 60 * 24;
@@ -18,7 +19,7 @@ export const DailyProduct = ({ product, onBuy, onTimerExpired, subscribe, isPurc
 
     useEffect(() => {
         const unsubscribe = subscribe((event, _id) => {
-            event === 'product_buy' && _id === product._id && start($24h - 1);
+            event === PRODUCT_EVENTS.PRODUCT_BUY && _id === product._id && start($24h - 1);
         });
 
         return () => {

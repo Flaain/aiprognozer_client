@@ -3,7 +3,7 @@ import { Skeleton } from '@/shared/ui/skeleton';
 
 export const VerifyFormSkeleton = () => {
     return (
-        <Container className='flex'>
+        <Container className='flex h-full pt-0'>
             <div className='flex flex-col justify-center max-w-md w-full mx-auto'>
                 <div className='flex flex-col items-center gap-2 mb-5'>
                     <Skeleton className='size-20 rounded-full mb-3' />

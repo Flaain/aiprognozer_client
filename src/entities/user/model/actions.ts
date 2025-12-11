@@ -7,11 +7,11 @@ export const userActions = (set: Setter<UserStore>, get: () => UserStore): UserS
     onSignin: (user) => set({ user }),
     onVerify: () => set((prevState) => ({ user: { ...prevState.user, isVerified: true } })),
     onRequestLimitExceeded: () => set((prevState) => ({ user: { ...prevState.user, request_count: prevState.user.request_limit } })),
-    updateFirstRequestAt: (date) => set((prevState) => ({ user: { ...prevState.user, last_request_at: date } })),
-    updateRequestCount: (action: 'inc' | 'dec') => set((prevState) => ({
+    updateFirstRequestAt: (date) => set((prevState) => ({ user: { ...prevState.user, first_request_at: date } })),
+    updateRequestCount: (action: 'inc' | 'dec' | 'reset') => set((prevState) => ({
         user: {
             ...prevState.user,
-            request_count: action === 'inc' ? prevState.user.request_count + 1 : prevState.user.request_count - 1
+            request_count: action === 'reset' ? 0 : action === 'inc' ? prevState.user.request_count + 1 : prevState.user.request_count - 1
         }
     })),
     applyProductEffect: (effect) => {

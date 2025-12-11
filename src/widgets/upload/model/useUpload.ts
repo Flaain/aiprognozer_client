@@ -9,23 +9,27 @@ import type { SportType } from '@/features/sport-dropdown';
 import { userActionsSelector, userSelector, useUser } from '@/entities/user';
 
 import { useDropZone, type UseDropZoneErrorCode } from '@/shared/hooks/useDropZone';
+import { useTimer } from '@/shared/hooks/useTimer';
 import type { Analysis, ApiFailureData } from '@/shared/model/types';
 
 import { uploadApi } from '../api';
 
 import { DROPZONE_ERROR_TO_MESSAGE, MAX_SIZE, MIMETYPES } from './constants';
 
-export const useUpload = (onAnalysisReady?: (analysis: Analysis) => void) => {
+export const useUpload = (onAnalysisReady: (analysis: Analysis) => void) => {
     const [isLoading, setIsLoading] = useState(false);
     const [image, setImage] = useState<{ file: File; url: string } | null>(null);
     const [sportType, setSportType] = useState<SportType | null>(null);
     const [error, setError] = useState<string | null>(null);
     
-    const { request_count, request_limit, isUnlimited } = useUser(useShallow(userSelector));
+    const { request_count, request_limit, isUnlimited, first_request_at } = useUser(useShallow(userSelector));
     const { updateRequestCount, onRequestLimitExceeded, updateFirstRequestAt } = useUser(useShallow(userActionsSelector));
-
-    const mainButtonRef = useRef<HTMLDivElement>(null);
+    
     const isReachedLimit = request_limit === request_count;
+    const timer = useTimer(isReachedLimit ? (+new Date(+new Date(first_request_at!) + 1000 * 60 * 60 * 24) - Date.now()) / 1000 : null, {
+        onExpire: () => updateRequestCount('reset')
+    });
+    const mainButtonRef = useRef<HTMLDivElement>(null);
     const delta = request_limit - request_count;
     const percent = Math.round((delta / request_limit) * 100);
 
@@ -46,7 +50,7 @@ export const useUpload = (onAnalysisReady?: (analysis: Analysis) => void) => {
 
             const { data: { first_request_at, ...analysis } } = await uploadApi.upload(form, sportType);
 
-            onAnalysisReady?.(analysis);
+            onAnalysisReady(analysis);
             updateFirstRequestAt(first_request_at);
 
             setImage(null);
@@ -57,7 +61,14 @@ export const useUpload = (onAnalysisReady?: (analysis: Analysis) => void) => {
                 
                 setImage(null);
                 setSportType(null);
+
                 setError('Превышен лимит запросов');
+
+                hideMainButton();
+
+                updateFirstRequestAt(error.response.data.first_request_at!)
+
+                timer.start((+new Date(+new Date(error.response.data.first_request_at!) + 1000 * 60 * 60 * 24) - Date.now()) / 1000);
             } else {
                 setError('При выполнении запроса произошла ошибка');
                 !isUnlimited && updateRequestCount('dec');
@@ -77,6 +88,13 @@ export const useUpload = (onAnalysisReady?: (analysis: Analysis) => void) => {
             });
         }
     };
+
+    const hideMainButton = () => {
+        mainButtonRef.current?.classList.remove('opacity-100', 'translate-y-0');
+        mainButtonRef.current?.classList.add('opacity-0', 'translate-y-10');
+
+        setTimeout(() => mainButtonRef.current?.classList.add('hidden'), 310);
+    }
 
     const handleDropOrSelect = (_: DragEvent | React.ChangeEvent<HTMLInputElement>, files: Array<File>) => {
         if (isReachedLimit) return;
@@ -106,10 +124,7 @@ export const useUpload = (onAnalysisReady?: (analysis: Analysis) => void) => {
 
         image && URL.revokeObjectURL(image.url);
 
-        mainButtonRef.current?.classList.remove('opacity-100', 'translate-y-0');
-        mainButtonRef.current?.classList.add('opacity-0', 'translate-y-10');
-
-        setTimeout(() => mainButtonRef.current?.classList.add('hidden'), 310);
+        hideMainButton();
     };
 
     const onDropZoneError = (code: UseDropZoneErrorCode) => {
@@ -128,6 +143,7 @@ export const useUpload = (onAnalysisReady?: (analysis: Analysis) => void) => {
     return {
         ref,
         sportType,
+        timer,
         onStartAnalysis,
         onSportTypeChange,
         setError,

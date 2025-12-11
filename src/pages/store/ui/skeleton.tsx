@@ -13,7 +13,7 @@ export const StoreSkeleton = ({ shouldAnimate, refetch, isRefetching, isError, e
     <Container
         as='div'
         className={cn(
-            'flex relative flex-col gap-10 pt-5 flex-1 no-scrollbar',
+            'flex relative flex-col gap-10 flex-1 no-scrollbar',
             isError ? 'overflow-hidden' : 'overflow-y-auto'
         )}
     >

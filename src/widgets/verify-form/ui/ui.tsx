@@ -16,7 +16,7 @@ export const VerifyForm = () => {
             <div className='flex flex-col justify-center gap-5 max-w-md w-full mx-auto'>
                 <div className='flex flex-col items-center mb-5'>
                     <div className='p-[10px] rounded-full bg-primary-blue-transparent mb-3'>
-                        <ShieldIcon className='text-primary-blue size-10' />
+                        <ShieldIcon className='text-primary-blue size-16' />
                     </div>
                     <Typography variant='primary' size='2xl'>
                         Пройдите верификацию

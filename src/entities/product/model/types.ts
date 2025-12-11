@@ -1,28 +1,4 @@
-import type { ProductEffectType } from '@/shared/model/types';
-
-import type { PRODUCT_TYPE } from './constants';
-
-export interface Product {
-    _id: string;
-    name: string;
-    description: string;
-    price: number;
-    slug: string;
-    type: ProductType;
-    canBuy?: boolean;
-    payedAt?: string;
-    prev?: string | null;
-    next?: string | null;
-    effect?: Array<ProductEffect>;
-}
-
-export interface ProductEffect {
-    value: number | boolean;
-    effect_type: ProductEffectType;
-    target: string;
-}
-
-export type ProductType = keyof typeof PRODUCT_TYPE;
+import type { Product } from '@/shared/model/types';
 
 export interface ProductProps {
     product: Product;

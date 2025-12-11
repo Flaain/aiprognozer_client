@@ -6,7 +6,7 @@ import { Container } from './container';
 import { Typography } from './typography';
 
 export const Loader = () => (
-    <Container className='flex flex-col items-center justify-center min-h-dvh'>
+    <Container className='flex flex-col items-center justify-center min-h-dvh pt-0'>
         <Player src={MoneyEmoji} loop autoplay className='max-h-[200px] max-w-[200px] size-full' />
         <Typography variant='primary' size='4xl' weight='semibold' className='animate-pulse'>
             Загрузка

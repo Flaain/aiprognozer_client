@@ -13,7 +13,8 @@
     --animate-shimmer: shimmer 3.5s infinite 5s;
     --animate-text-loader: text-loader 20s infinite 1s;
     --navbar-height: 50px;
-    --tonum: 0;
+
+    --pt-main: 10px;
 
     @keyframes shimmer {
         0% {

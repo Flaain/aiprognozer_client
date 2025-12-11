@@ -31,7 +31,7 @@ export const LoginError = () => {
     };
 
     return (
-        <Container className='flex flex-col relative items-center max-w-[400px] justify-center min-h-dvh'>
+        <Container className='flex flex-col relative items-center max-w-[400px] justify-center min-h-dvh pb-[calc(var(--tg-viewport-safe-area-inset-bottom)+10px)]'>
             <Typography as='h1' variant='primary' size='4xl' weight='bold' className='mb-2'>
                 Произошла ошибка
             </Typography>
@@ -43,7 +43,7 @@ export const LoginError = () => {
                 cta={!isRefetch}
                 onClick={handleRefetch}
                 isLoading={isRefetch}
-                className='mt-10'
+                className='py-3 h-auto mt-auto'
             >
                 Попробовать еще раз
             </LoadingButton>

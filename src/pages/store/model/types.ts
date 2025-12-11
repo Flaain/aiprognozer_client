@@ -1,7 +1,7 @@
-import type { IProduct, PRODUCT_TYPE } from '@/entities/product';
+import type { PRODUCT_TYPE } from "@/shared/model/constants";
+import type { Product } from "@/shared/model/types";
 
-export type Store = Record<(typeof PRODUCT_TYPE)[keyof typeof PRODUCT_TYPE], Array<IProduct>>;
-export type BuyedProduct = Required<Pick<IProduct, '_id' | 'type' | 'payedAt' | 'effect' | 'slug'>>;
+export type Store = Record<(typeof PRODUCT_TYPE)[keyof typeof PRODUCT_TYPE], Array<Product>>;
 
 export interface StoreSkeletonProps {
     shouldAnimate?: boolean;

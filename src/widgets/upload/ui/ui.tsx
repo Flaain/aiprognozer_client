@@ -25,6 +25,7 @@ export const Upload = ({ onAnalysisReady }: UploadProps) => {
         mainButtonRef,
         sportType,
         error,
+        timer,
         setError,
         onSportTypeChange,
         delta,
@@ -140,7 +141,7 @@ export const Upload = ({ onAnalysisReady }: UploadProps) => {
                                     Достигнут лимит запросов
                                 </Typography>
                                 <Typography as='p' variant='secondary' weight='thin' className='text-pretty'>
-                                    Запросы обнулятся через 24 часа
+                                    Запросы обнулятся через:&nbsp;{timer.hours.toString().padStart(2, '0')}:{timer.minutes.toString().padStart(2, '0')}:{timer.seconds.toString().padStart(2, '0')}
                                 </Typography>
                             </>
                         ) : (
