@@ -23,7 +23,7 @@ export const useStore = () => {
 
     const [processingIds, setProcessingIds] = useState<Array<string>>([]);
 
-    const { socket, isConnected } = useSocket(useShallow((state) => state));
+    const { socket } = useSocket(useShallow((state) => state));
 
     const subscribers = useRef<Set<(event: string, _id: string) => void>>(new Set());
 
