@@ -38,7 +38,7 @@ export const Upload = ({ onAnalysisReady }: UploadProps) => {
         isLoading
     } = useUpload(onAnalysisReady);
 
-    const { isUnlimited } = useUser(useShallow(userSelector));
+    const { isUnlimited, role } = useUser(useShallow(userSelector));
 
     return (
         <div className='flex flex-col w-full box-border relative'>
@@ -168,7 +168,7 @@ export const Upload = ({ onAnalysisReady }: UploadProps) => {
                     </Typography>
                 </div>
             )}
-            {!isUnlimited && (
+            {!isUnlimited && role !== 'ADMIN' && (
                 <div className='mt-5 flex flex-col gap-2 p-3 rounded-[14px] border border-solid border-primary-white-secondary/30'>
                     <div className='flex items-center justify-between'>
                         <div className='flex items-center gap-2'>
