@@ -16,6 +16,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     const { 0: store } = useState(() => createStore<SocketStore>(() => ({
         socket: io(import.meta.env.VITE_SERVER_URL, {
             autoConnect: false,
+            path: '/api/gateway',
             extraHeaders: {
                 authorization: `tma ${retrieveRawInitData()}`
             }
