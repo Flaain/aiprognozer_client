@@ -1,7 +1,6 @@
 import { cn } from '@/shared/lib/utils';
+import type { PRODUCT_TYPE } from '@/shared/model/constants';
 import { Skeleton } from '@/shared/ui/skeleton';
-
-import type { PRODUCT_TYPE } from '../model/constants';
 
 export const ProductSkeleton = ({ type = 'DEFAULT' }: { type?: (typeof PRODUCT_TYPE)[keyof typeof PRODUCT_TYPE] }) => (
     <div
