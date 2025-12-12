@@ -36,7 +36,8 @@ export interface User {
     isUnlimited: boolean;
     isVerified: boolean;
     referall?: string;
-
+    role: 'USER' | 'ADMIN';
+    
     [key: string]: any; // temp solution
 }
 

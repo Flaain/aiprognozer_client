@@ -22,7 +22,7 @@ export const useUpload = (onAnalysisReady: (analysis: Analysis) => void) => {
     const [sportType, setSportType] = useState<SportType | null>(null);
     const [error, setError] = useState<string | null>(null);
     
-    const { request_count, request_limit, isUnlimited, first_request_at } = useUser(useShallow(userSelector));
+    const { request_count, request_limit, isUnlimited, first_request_at, role } = useUser(useShallow(userSelector));
     const { updateRequestCount, onRequestLimitExceeded, updateFirstRequestAt } = useUser(useShallow(userActionsSelector));
     
     const isReachedLimit = request_limit === request_count;
@@ -42,7 +42,7 @@ export const useUpload = (onAnalysisReady: (analysis: Analysis) => void) => {
             
             hapticFeedbackImpactOccurred('medium');
 
-            !isUnlimited && updateRequestCount('inc');
+            !isUnlimited && role !== 'ADMIN' && updateRequestCount('inc');
 
             const form = new FormData();
 
@@ -71,7 +71,7 @@ export const useUpload = (onAnalysisReady: (analysis: Analysis) => void) => {
                 timer.start((+new Date(+new Date(error.response.data.first_request_at!) + 1000 * 60 * 60 * 24) - Date.now()) / 1000);
             } else {
                 setError('При выполнении запроса произошла ошибка');
-                !isUnlimited && updateRequestCount('dec');
+                !isUnlimited && role !== 'ADMIN' && updateRequestCount('dec');
             }
         } finally {
             setIsLoading(false);
