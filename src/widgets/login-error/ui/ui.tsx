@@ -37,7 +37,7 @@ export const LoginError = () => {
             <Typography as='h1' variant='primary' size='4xl' weight='bold' className='mb-2'>
                 Произошла ошибка
             </Typography>
-            <Typography as='p' variant='secondary' size='md' weight='thin' className='max-w-[300px] text-pretty'>
+            <Typography as='p' variant='secondary' size='md' weight='thin' className='max-w-[300px] text-pretty mb-2'>
                 При получении профиля произошла непредвиденная ошибка. Пожалуйста, попробуйте еще раз
             </Typography>
             <Typography as='p' variant='secondary' size='md' weight='thin' className='max-w-[300px] text-pretty'>
