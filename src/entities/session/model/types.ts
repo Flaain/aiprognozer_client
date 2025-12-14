@@ -1,7 +1,7 @@
 export interface SessionStore {
     userId: string;
     isAuthorized: boolean;
-    error: unknown;
+    error: string | null;
     isAuthInProgress: boolean;
     actions: {
         onSignout: () => void;

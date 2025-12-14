@@ -41,7 +41,7 @@ export const LoginError = () => {
                 При получении профиля произошла непредвиденная ошибка. Пожалуйста, попробуйте еще раз
             </Typography>
             <Typography as='p' variant='secondary' size='md' weight='thin' className='max-w-[300px] text-pretty'>
-                {JSON.stringify(error)}
+                Ошибка - {error}
             </Typography>
             <Player src={CatEmoji} loop autoplay className='max-h-[400px] max-w-[400px] size-full' />
             <LoadingButton
