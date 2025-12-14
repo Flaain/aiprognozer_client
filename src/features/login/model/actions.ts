@@ -10,6 +10,6 @@ export const login = async () => {
         useUser.getState().actions.onSignin(data);
     } catch (error) {
         console.error(error);
-        useSession.setState({ isAuthInProgress: false });
+        useSession.setState({ isAuthInProgress: false, error });
     }
 }

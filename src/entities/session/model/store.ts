@@ -7,5 +7,6 @@ export const useSession = create<SessionStore>((set) => ({
     userId: null!,
     isAuthInProgress: true,
     isAuthorized: false,
+    error: null,
     actions: sessionActions(set)
 }));

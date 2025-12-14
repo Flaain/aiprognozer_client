@@ -1,4 +1,4 @@
-import { Suspense, useEffect } from 'react';
+import { Suspense } from 'react';
 
 import { useShallow } from 'zustand/shallow';
 
@@ -6,8 +6,6 @@ import { screens } from '@/pages';
 
 import { LoginError } from '@/widgets/login-error';
 import { VerifyForm, VerifyFormSkeleton } from '@/widgets/verify-form';
-
-import { login } from '@/features/login';
 
 import { sessionFlagsSelector, useSession } from '@/entities/session';
 import { userSelector, useUser } from '@/entities/user';
@@ -20,8 +18,6 @@ export const App = () => {
     const { isAuthorized, isAuthInProgress } = useSession(useShallow(sessionFlagsSelector));
 
     const user = useUser(useShallow(userSelector));
-
-    useEffect(() => { login() }, []);
 
     if (isAuthInProgress) return <Loader />;
 

@@ -11,6 +11,8 @@ import {
     retrieveLaunchParams
 } from '@telegram-apps/sdk-react';
 
+import { login } from '@/features/login';
+
 import { useTheme, getTheme } from '@/entities/theme';
 
 import { NotTMA } from '@/shared/ui/not-tma';
@@ -45,6 +47,8 @@ const init = async (debug: boolean) => {
         initData.restore();
 
         useTheme.getState().actions.changeTheme(getTheme());
+
+        login();
     } else {
         console.warn(
             `Приложение работает только внутри Telegram. Пожалуйста, откройте приложение из нашего бота - ${

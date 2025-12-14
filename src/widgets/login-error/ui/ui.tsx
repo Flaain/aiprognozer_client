@@ -14,6 +14,8 @@ import { Typography } from '@/shared/ui/typography';
 
 export const LoginError = () => {
     const [isRefetch, setIsRefetch] = useState(false);
+    
+    const error = useSession((state) => state.error);
 
     const handleRefetch = async () => {
         try {
@@ -37,6 +39,9 @@ export const LoginError = () => {
             </Typography>
             <Typography as='p' variant='secondary' size='md' weight='thin' className='max-w-[300px] text-pretty'>
                 При получении профиля произошла непредвиденная ошибка. Пожалуйста, попробуйте еще раз
+            </Typography>
+            <Typography as='p' variant='secondary' size='md' weight='thin' className='max-w-[300px] text-pretty'>
+                {JSON.stringify(error)}
             </Typography>
             <Player src={CatEmoji} loop autoplay className='max-h-[400px] max-w-[400px] size-full' />
             <LoadingButton
