@@ -9,6 +9,7 @@ export const login = async () => {
         useSession.getState().actions.onSignin(data._id);
         useUser.getState().actions.onSignin(data);
     } catch (error) {
+        console.error(error);
         useSession.setState({ isAuthInProgress: false });
     }
 }
