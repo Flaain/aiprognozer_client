@@ -18,7 +18,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     const applyProductEffect = useUser(useShallow((state) => state.actions.applyProductEffect));
 
     useEffect(() => {
-        const socket = io(import.meta.env.VITE_SERVER_URL, {
+        const socket = io(import.meta.env.VITE_SERVER_HOST, {
             path: '/api/gateway',
             extraHeaders: {
                 authorization: `tma ${retrieveRawInitData()}`
