@@ -13,32 +13,30 @@ import { SocketContext } from './context';
 import type { SocketStore } from './types';
 
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
-    const { 0: store } = useState(() => createStore<SocketStore>(() => ({
-        socket: io(import.meta.env.VITE_SERVER_URL, {
-            autoConnect: false,
-            path: '/api/gateway',
-            extraHeaders: {
-                authorization: `tma ${retrieveRawInitData()}`
-            }
-        }),
-        isConnected: false
-    })));
+    const { 0: store } = useState(() => createStore<SocketStore>(() => ({ socket: null!, isConnected: false })));
 
     const applyProductEffect = useUser(useShallow((state) => state.actions.applyProductEffect));
 
     useEffect(() => {
-        const socket = store.getState().socket;
+        const socket = io(import.meta.env.VITE_SERVER_URL, {
+            path: '/api/gateway',
+            extraHeaders: {
+                authorization: `tma ${retrieveRawInitData()}`
+            }
+        })
 
         socket.on('connect', () => store.setState({ isConnected: true }));
         socket.on('disconnect', () => store.setState({ isConnected: false }));
 
         socket.on(SOCKET_EVENTS.PRODUCT_BUY, applyProductEffect);
 
-        socket.connect();
+        store.setState({ socket });
 
         return () => {
             socket.removeAllListeners();
             socket.disconnect();
+
+            store.setState({ socket: null!, isConnected: false });
         }
     }, []);
 
