@@ -5,7 +5,7 @@ import type { UserStore } from './types';
 
 export const userActions = (set: Setter<UserStore>, get: () => UserStore): UserStore['actions'] => ({
     onSignin: (user) => set({ user }),
-    onVerify: () => set((prevState) => ({ user: { ...prevState.user, isVerified: true } })),
+    onVerify: (onewin_id: number) => set((prevState) => ({ user: { ...prevState.user, isVerified: true, onewin_id } })),
     onRequestLimitExceeded: () => set((prevState) => ({ user: { ...prevState.user, request_count: prevState.user.request_limit } })),
     updateFirstRequestAt: (date) => set((prevState) => ({ user: { ...prevState.user, first_request_at: date } })),
     updateRequestCount: (action: 'inc' | 'dec' | 'reset') => set((prevState) => ({
