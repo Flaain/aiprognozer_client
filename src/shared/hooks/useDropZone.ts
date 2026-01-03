@@ -269,14 +269,17 @@ export const useDropZone = <T extends HTMLElement>({
 
     const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (!event.target.files?.length || disabled) return;
-        
+
         const files = Array.from(event.target.files);
         
-        if (!isValid(files)) return;
+        if (!isValid(files)) {
+            event.target.value = '';
+            return;
+        }
         
         onSelect?.(event, files);
         setFiles(files);
-
+        
         event.target.value = '';
     };
 
