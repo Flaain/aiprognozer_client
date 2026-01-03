@@ -13,6 +13,7 @@ import { userSelector, useUser } from '@/entities/user';
 import { ScreenProvider } from '@/shared/providers/screen/provider';
 import { SocketProvider } from '@/shared/providers/socket/provider';
 import { Loader } from '@/shared/ui/loader';
+import { MainLayout } from '@/shared/ui/main-layout';
 
 export const App = () => {
     const { isAuthorized, isAuthInProgress } = useSession(useShallow(sessionFlagsSelector));
@@ -33,7 +34,7 @@ export const App = () => {
 
     return (
         <SocketProvider>
-            <ScreenProvider screens={screens} />;
+            <ScreenProvider screens={screens} Layout={MainLayout} />
         </SocketProvider>
     );
 };
