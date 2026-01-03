@@ -4,7 +4,7 @@ export interface UserStore {
     user: User;
     actions: {
         onSignin: (user: User) => void;
-        onVerify: () => void;
+        onVerify: (onewin_id: number) => void;
         updateRequestCount: (action: 'inc' | 'dec' | 'reset') => void;
         updateFirstRequestAt: (date: string) => void;
         onRequestLimitExceeded: () => void;
