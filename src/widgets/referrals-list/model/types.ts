@@ -1,7 +1,7 @@
-import type { Referall } from '@/shared/model/types';
+import type { Referral } from '@/shared/model/types';
 
-export interface ReferallLoadedMore {
-    items: Array<Referall>;
+export interface ReferralLoadedMore {
+    items: Array<Referral>;
     meta: {
         total: number;
         hasMore: boolean;
@@ -10,8 +10,8 @@ export interface ReferallLoadedMore {
     };
 }
 
-export interface ReferallsListProps {
-    referalls: Array<Referall>;
+export interface ReferralsListProps {
+    referrals: Array<Referral>;
     isLoading: boolean;
     isError: boolean;
     isRefetching: boolean;

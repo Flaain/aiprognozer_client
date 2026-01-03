@@ -4,13 +4,13 @@ import { shareMessage } from '@telegram-apps/sdk-react';
 
 import { userApi } from '@/entities/user';
 
-import type { ReferallsPageState } from './types';
+import type { ReferralsPageState } from './types';
 
-export const useReferalls = () => {
+export const useReferrals = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [isError, setIsError] = useState(false);
     const [isRefetching, setIsRefetching] = useState(false);
-    const [data, setData] = useState<ReferallsPageState>(null!);
+    const [data, setData] = useState<ReferralsPageState>(null!);
 
     const [isLoadingMore, setIsLoadingMore] = useState(false);
     const [isErrorMore, setIsErrorMore] = useState(false);
@@ -21,12 +21,12 @@ export const useReferalls = () => {
 
     const controller = useRef<AbortController>(null!);
 
-    const isEmpty = !isLoading && !isError && !data?.referalls.items.length;
+    const isEmpty = !isLoading && !isError && !data?.referrals.items.length;
 
     useEffect(() => {
         controller.current = new AbortController();
 
-        handleFetchReferalls('init');
+        handleFetchReferrals('init');
 
         return () => {
             controller.current.abort();
@@ -57,11 +57,11 @@ export const useReferalls = () => {
         }
     }
 
-    const handleFetchReferalls = async (action: 'init' | 'refetch') => {
+    const handleFetchReferrals = async (action: 'init' | 'refetch') => {
         try {
             action === 'init' ? setIsLoading(true) : setIsRefetching(true);
 
-            const { data } = await userApi.referalls<ReferallsPageState>();
+            const { data } = await userApi.referrals<ReferralsPageState>();
 
             setData(data);
             setIsError(false);
@@ -77,13 +77,13 @@ export const useReferalls = () => {
         try {
             action === 'load' ? setIsLoadingMore(true) : setIsRefetchingMore(true);
 
-            const res = await userApi.referalls<Pick<ReferallsPageState, 'referalls'>>(data.referalls.meta.nextCursor!);
+            const res = await userApi.referrals<Pick<ReferralsPageState, 'referrals'>>(data.referrals.meta.nextCursor!);
 
             setData((prevState) => ({
                 ...prevState,
-                referalls: {
-                    items: [...prevState.referalls.items, ...res.data.referalls.items],
-                    meta: res.data.referalls.meta
+                referrals: {
+                    items: [...prevState.referrals.items, ...res.data.referrals.items],
+                    meta: res.data.referrals.meta
                 }
             }));
 
@@ -110,6 +110,6 @@ export const useReferalls = () => {
         onLoadMore,
         handleCopy,
         handleInvite,
-        refetch: () => handleFetchReferalls('refetch')
+        refetch: () => handleFetchReferrals('refetch')
     };
 };

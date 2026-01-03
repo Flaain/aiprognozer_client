@@ -4,7 +4,7 @@ import { LoadingButton } from '@/shared/ui/loading-button';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { Typography } from '@/shared/ui/typography';
 
-export const ReferallsSkeleton = ({
+export const ReferralsSkeleton = ({
     isError,
     refetch,
     isRefetching

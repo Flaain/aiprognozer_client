@@ -3,12 +3,12 @@ import { Suspense } from 'react';
 import type { ScreenObject } from '@/shared/providers/screen/types';
 
 import { View } from './model/view';
-import { ReferallsSkeleton } from './ui/skeleton';
+import { ReferralsSkeleton } from './ui/skeleton';
 
-export const ReferallsScreen: ScreenObject = {
-    name: 'referalls',
+export const ReferralsScreen: ScreenObject = {
+    name: 'referrals',
     element: (
-        <Suspense fallback={<ReferallsSkeleton />}>
+        <Suspense fallback={<ReferralsSkeleton />}>
             <View />
         </Suspense>
     )

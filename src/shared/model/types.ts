@@ -1,7 +1,7 @@
 import type { PRODUCT_EFFECT_TYPE, PRODUCT_TYPE } from "./constants";
 
 export type Setter<T> = (state: Partial<T> | ((state: T) => Partial<T>)) => void;
-export type ApiExceptionCode = 'REFERALL_NOT_EXISTS' | 'REFERALL_ALREADY_TAKEN' | 'ALREADY_VERIFIED' | 'REQUEST_LIMIT_EXCEEDED';
+export type ApiExceptionCode = 'REFERRAL_NOT_EXISTS' | 'REFERRAL_ALREADY_TAKEN' | 'ALREADY_VERIFIED' | 'REQUEST_LIMIT_EXCEEDED';
 export type ProductEffectType = typeof PRODUCT_EFFECT_TYPE[keyof typeof PRODUCT_EFFECT_TYPE];
 export type BuyedProduct = Required<Pick<Product, '_id' | 'type' | 'payedAt' | 'effect' | 'slug'>>;
 export type ProductType = keyof typeof PRODUCT_TYPE;
@@ -41,7 +41,7 @@ export interface User {
     [key: string]: any; // temp solution
 }
 
-export interface Referall {
+export interface Referral {
     _id: string;
     name: string;
     telegram_id: number;

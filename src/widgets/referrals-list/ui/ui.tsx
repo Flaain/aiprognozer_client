@@ -2,23 +2,23 @@ import { LoadingButton } from '@/shared/ui/loading-button';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { Typography } from '@/shared/ui/typography';
 
-import type { ReferallsListProps } from '../model/types';
-import { useReferallsList } from '../model/useReferallsList';
+import type { ReferralsListProps } from '../model/types';
+import { useReferralsList } from '../model/useReferralsList';
 
-export const ReferallsList = ({
+export const ReferralsList = ({
     canLoadMore,
     isError,
     isLoading,
     isRefetching,
     onLoadMore,
-    referalls
-}: ReferallsListProps) => {
-    const ref = useReferallsList({ canLoadMore, onLoadMore });
+    referrals
+}: ReferralsListProps) => {
+    const ref = useReferralsList({ canLoadMore, onLoadMore });
 
     return (
         <>
             <ul className='flex flex-col gap-3 w-full'>
-                {referalls.map(({ name, isVerified, telegram_id }, index, array) => (
+                {referrals.map(({ name, isVerified, telegram_id }, index, array) => (
                     <li
                         key={telegram_id}
                         ref={index === array.length - 1 ? ref : null}

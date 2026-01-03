@@ -1,6 +1,6 @@
 import { hapticFeedbackImpactOccurred } from '@telegram-apps/sdk-react';
 
-import { HomeIcon, StoreIcon, ReferallsIcon } from '../lib/assets/icons';
+import { HomeIcon, StoreIcon, ReferralsIcon } from '../lib/assets/icons';
 import { cn } from '../lib/utils';
 import { useScreen } from '../providers/screen/context';
 
@@ -32,14 +32,14 @@ export const Navbar = () => {
                     </Typography>
                 </Button>
                 <Button 
-                    onClick={() => handleChangeScreen('referalls')}
+                    onClick={() => handleChangeScreen('referrals')}
                     variant='icon'
                     className={cn(
                         'gap-1 pt-2 px-1 grow-1 pb-[calc(max(8px,var(--tg-viewport-safe-area-inset-bottom)))] h-full box-border flex-col rounded-r-xl rounded-l-xl',
-                        currentScreen.name === 'referalls' ? 'bg-primary-blue' : 'hover:bg-primary-blue-transparent'
+                        currentScreen.name === 'referrals' ? 'bg-primary-blue' : 'hover:bg-primary-blue-transparent'
                     )}
                 >
-                    <ReferallsIcon className=' text-primary-white size-6' />
+                    <ReferralsIcon className=' text-primary-white size-6' />
                     <Typography size='xs' className='transition-colors duration-200 ease-in-out'>
                         Друзья
                     </Typography>

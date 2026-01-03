@@ -1,4 +1,4 @@
-import { ReferallsList } from '@/widgets/referalls-list';
+import { ReferralsList } from '@/widgets/referrals-list';
 
 import { CheckIcon, CopyIcon } from '@/shared/lib/assets/icons';
 
@@ -8,11 +8,11 @@ import { Container } from '@/shared/ui/container';
 import { LoadingButton } from '@/shared/ui/loading-button';
 import { Typography } from '@/shared/ui/typography';
 
-import { useReferalls } from '../model/useReferalls';
+import { useReferrals } from '../model/useReferrals';
 
-import { ReferallsSkeleton } from './skeleton';
+import { ReferralsSkeleton } from './skeleton';
 
-export const Referalls = () => {
+export const Referrals = () => {
     const {
         isLoading,
         isError,
@@ -28,10 +28,10 @@ export const Referalls = () => {
         handleCopy,
         onLoadMore,
         handleInvite
-    } = useReferalls();
+    } = useReferrals();
 
     if (isLoading || isError || isRefetching) {
-        return <ReferallsSkeleton isRefetching={isRefetching} isError={isError} refetch={refetch} />;
+        return <ReferralsSkeleton isRefetching={isRefetching} isError={isError} refetch={refetch} />;
     }
 
     return (
@@ -69,13 +69,13 @@ export const Referalls = () => {
                     <Typography as='h2' size='lg'>
                         Ваши друзья
                     </Typography>
-                    <ReferallsList
+                    <ReferralsList
                         isLoading={isLoadingMore}
                         isError={isErrorMore}
                         isRefetching={isRefetchingMore}
-                        canLoadMore={data?.referalls.meta.hasMore && !isLoadingMore && !isErrorMore}
+                        canLoadMore={data?.referrals.meta.hasMore && !isLoadingMore && !isErrorMore}
                         onLoadMore={onLoadMore}
-                        referalls={data?.referalls.items}
+                        referrals={data?.referrals.items}
                     />
                 </div>
             )}

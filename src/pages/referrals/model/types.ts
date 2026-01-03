@@ -1,11 +1,11 @@
-import type { Referall } from '@/shared/model/types';
+import type { Referral } from '@/shared/model/types';
 
-export interface ReferallsPageState {
+export interface ReferralsPageState {
     rewards: {
         [key: string]: Record<string, number>;
     };
-    referalls: {
-        items: Array<Referall>;
+    referrals: {
+        items: Array<Referral>;
         meta: {
             hasMore: boolean;
             perPage: number;
