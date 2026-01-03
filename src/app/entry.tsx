@@ -48,7 +48,7 @@ const init = async (debug: boolean) => {
 
         useTheme.getState().actions.changeTheme(getTheme());
 
-        login();
+        login(retrieveLaunchParams().tgWebAppStartParam);
     } else {
         console.warn(
             `Приложение работает только внутри Telegram. Пожалуйста, откройте приложение из нашего бота - ${
