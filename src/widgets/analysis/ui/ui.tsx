@@ -7,7 +7,7 @@ export const Analysis = ({ analysis, onBack }: { analysis: IAnalysis; onBack: ()
     useBackButtonTelegram(onBack);
 
     return (
-        <div className='flex flex-col gap-5'>
+        <>
             <div className='flex items-start justify-start flex-col gap-2'>
                 <Typography as='h1' size='2xl' weight='semibold'>
                     Основной прогноз
@@ -68,6 +68,6 @@ export const Analysis = ({ analysis, onBack }: { analysis: IAnalysis; onBack: ()
                     ))}
                 </ul>
             </div>
-        </div>
+        </>
     );
 };

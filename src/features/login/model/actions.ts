@@ -2,9 +2,9 @@ import { authApi } from "@/entities/auth";
 import { useSession } from "@/entities/session";
 import { useUser } from "@/entities/user";
 
-export const login = async () => {
+export const login = async (startParams?: string) => {
     try {
-        const { data } = await authApi.login();
+        const { data } = await authApi.login(startParams);
 
         useSession.getState().actions.onSignin(data._id);
         useUser.getState().actions.onSignin(data);

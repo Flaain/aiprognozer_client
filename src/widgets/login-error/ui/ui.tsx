@@ -40,9 +40,11 @@ export const LoginError = () => {
             <Typography as='p' variant='secondary' size='md' weight='thin' className='max-w-[300px] text-pretty mb-2'>
                 При получении профиля произошла непредвиденная ошибка. Пожалуйста, попробуйте еще раз
             </Typography>
-            <Typography as='p' variant='secondary' size='md' weight='thin' className='max-w-[300px] text-pretty'>
-                Ошибка - {error}
-            </Typography>
+            {error && (
+                <Typography as='p' variant='secondary' size='md' weight='thin' className='max-w-[300px] text-pretty'>
+                    Ошибка - {error}
+                </Typography>
+            )}
             <Player src={CatEmoji} loop autoplay className='max-h-[400px] max-w-[400px] size-full' />
             <LoadingButton
                 cta={!isRefetch}

@@ -1,11 +1,9 @@
 import { useState } from 'react';
 
-import { MainLayout } from '@/shared/ui/main-layout';
-
 import { ScreenContext } from './context';
-import type { ChangeScreenOptions, Screen, Screens } from './types';
+import type { ChangeScreenOptions, Screen, ScreenProviderProps } from './types';
 
-export const ScreenProvider = ({ screens }: { screens: Screens }) => {
+export const ScreenProvider = ({ screens, Layout }: ScreenProviderProps) => {
     const { 0: currentScreen, 1: setCurrentScreen } = useState<Screen>(() => {
         const defaultScreen = screens.find((screen) => screen.default);
 
@@ -26,7 +24,7 @@ export const ScreenProvider = ({ screens }: { screens: Screens }) => {
 
     return (
         <ScreenContext.Provider value={{ currentScreen, changeScreen }}>
-            <MainLayout>{currentScreen.element}</MainLayout>
+            {Layout ? <Layout>{currentScreen.element}</Layout> : currentScreen.element}
         </ScreenContext.Provider>
     );
 };

@@ -9,7 +9,7 @@ import { Typography } from '@/shared/ui/typography';
 import { useVerifyForm } from '../model/useVerifyForm';
 
 export const VerifyForm = () => {
-    const { error, isLoading, isSubmitButtonDisabled, onChange, onSubmit, one_win_id } = useVerifyForm();
+    const { error, isLoading, isSubmitButtonDisabled, onChange, onSubmit, oneWinId } = useVerifyForm();
 
     return (
         <Container className='flex min-h-dvh'>
@@ -34,7 +34,7 @@ export const VerifyForm = () => {
                             disabled={isLoading}
                             variant='primary'
                             inputMode='numeric'
-                            value={one_win_id}
+                            value={oneWinId}
                             onChange={onChange}
                             type='text'
                             _size='sm'

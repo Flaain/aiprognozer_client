@@ -35,10 +35,18 @@ export interface User {
     isBanned: boolean;
     isUnlimited: boolean;
     isVerified: boolean;
-    referall?: string;
+    onewin_id?: number;
     role: 'USER' | 'ADMIN';
     
     [key: string]: any; // temp solution
+}
+
+export interface Referall {
+    _id: string;
+    name: string;
+    telegram_id: number;
+    createdAt: string;
+    isVerified: boolean;
 }
 
 export interface ApiDefaultSuccessResponse {

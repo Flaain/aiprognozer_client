@@ -5,7 +5,7 @@ import { SportDropdown } from '@/features/sport-dropdown';
 
 import { userSelector, useUser } from '@/entities/user';
 
-import { AiIcon, AttentionIcon, ClockIcon, CloseIcon, PulseIcon, UploadIcon } from '@/shared/lib/assets/icons';
+import { AiIcon, ClockIcon, CloseIcon, PulseIcon, UploadIcon } from '@/shared/lib/assets/icons';
 
 import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui/button';
@@ -24,9 +24,7 @@ export const Upload = ({ onAnalysisReady }: UploadProps) => {
         handleRemove,
         mainButtonRef,
         sportType,
-        error,
         timer,
-        setError,
         onSportTypeChange,
         delta,
         request_limit,
@@ -41,22 +39,14 @@ export const Upload = ({ onAnalysisReady }: UploadProps) => {
     const { isUnlimited, role } = useUser(useShallow(userSelector));
 
     return (
-        <div className='flex flex-col w-full box-border relative'>
+        <>
             <SportDropdown onSelect={onSportTypeChange} value={sportType} disabled={isLoading || isReachedLimit} />
             <label
                 ref={ref}
                 className={cn(
-                    'mt-5 relative h-[450px] transition-colors ease-in-out border-primary-white-secondary/30 duration-300 flex flex-col p-5 max-sm:p-3 items-center justify-center gap-1 box-border border-2 border-dashed rounded-[14px]',
-                    isOvered &&
-                        !isLoading &&
-                        (error
-                            ? 'border-primary-error bg-primary-error/10'
-                            : 'border-primary-blue bg-primary-blue-transparent'),
-                    error && 'border-primary-error/50',
-                    !isLoading && !isReachedLimit && 'cursor-pointer',
-                    !isLoading &&
-                        !isReachedLimit &&
-                        (error ? 'hover:border-primary-error' : 'hover:border-primary-blue')
+                    'relative min-h-[350px] flex-1 self-stretch transition-colors ease-in-out border-primary-white-secondary/30 duration-300 flex flex-col p-5 max-sm:p-3 items-center justify-center gap-1 box-border border-2 border-dashed rounded-[14px]',
+                    isOvered && !isLoading && 'border-primary-blue bg-primary-blue-transparent',
+                    !isLoading && !isReachedLimit && 'cursor-pointer hover:[&:not(:has(button:hover))]:border-primary-blue',
                 )}
             >
                 <Input
@@ -141,7 +131,9 @@ export const Upload = ({ onAnalysisReady }: UploadProps) => {
                                     Достигнут лимит запросов
                                 </Typography>
                                 <Typography as='p' variant='secondary' weight='thin' className='text-pretty'>
-                                    Запросы обнулятся через:&nbsp;{timer.hours.toString().padStart(2, '0')}:{timer.minutes.toString().padStart(2, '0')}:{timer.seconds.toString().padStart(2, '0')}
+                                    Запросы обнулятся через:&nbsp;{timer.hours.toString().padStart(2, '0')}:
+                                    {timer.minutes.toString().padStart(2, '0')}:
+                                    {timer.seconds.toString().padStart(2, '0')}
                                 </Typography>
                             </>
                         ) : (
@@ -156,20 +148,22 @@ export const Upload = ({ onAnalysisReady }: UploadProps) => {
                         )}
                     </div>
                 )}
-            </label>
-            {error && (
-                <div
-                    onClick={() => setError(null)}
-                    className='mt-5 flex cursor-pointer items-start justify-start p-5 max-sm:p-3 relative bg-primary-error/10 rounded-[14px] border border-solid border-primary-error'
+                <LoadingButton
+                    ref={mainButtonRef}
+                    cta={!isLoading && !!image && !!sportType}
+                    onClick={onStartAnalysis}
+                    className={cn('disabled:opacity-100 h-12 rounded-b-[14px] rounded-t-none flex z-10 absolute inset-x-5 max-sm:inset-x-3 w-auto bottom-5 max-sm:bottom-3 transition-all duration-200 ease-in-out',
+                        !image || !sportType ? 'opacity-0! pointer-events-none translate-y-2' : 'opacity-100 pointer-events-auto translate-y-0'
+                    )}
+                    disabled={!image || !sportType || isLoading}
+                    isLoading={isLoading}
                 >
-                    <AttentionIcon className='min-w-5 min-h-5 size-5 text-primary-error mr-3' />
-                    <Typography variant='error' as='p' weight='thin' size='sm' className='text-pretty text-left'>
-                        {error}
-                    </Typography>
-                </div>
-            )}
+                    <AiIcon className='text-primary-white size-5' />
+                    Запустить анализ
+                </LoadingButton>
+            </label>
             {!isUnlimited && role !== 'ADMIN' && (
-                <div className='mt-5 flex flex-col gap-2 p-3 rounded-[14px] border border-solid border-primary-white-secondary/30'>
+                <div className='flex flex-col gap-2 p-3 rounded-[14px] border border-solid border-primary-white-secondary/30'>
                     <div className='flex items-center justify-between'>
                         <div className='flex items-center gap-2'>
                             <PulseIcon className='size-5 text-primary-blue' />
@@ -191,21 +185,6 @@ export const Upload = ({ onAnalysisReady }: UploadProps) => {
                     </div>
                 </div>
             )}
-            <div
-                ref={mainButtonRef}
-                className='pt-5 hidden z-10 bg-primary-dark opacity-0 sticky bottom-0 translate-y-10 transition-all duration-200 ease-in-out'
-            >
-                <LoadingButton
-                    cta={!isLoading && !!image && !!sportType}
-                    onClick={onStartAnalysis}
-                    className='h-11'
-                    disabled={!image || !sportType || isLoading}
-                    isLoading={isLoading}
-                >
-                    <AiIcon className='text-primary-white size-5' />
-                    Запустить анализ
-                </LoadingButton>
-            </div>
-        </div>
+        </>
     );
 };

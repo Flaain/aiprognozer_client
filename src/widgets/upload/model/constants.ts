@@ -8,10 +8,19 @@ export const MAX_FILES = 1;
 export const MAX_SIZE = 10 * 1024 ** 2;
 export const MIMETYPES = ['image/jpeg', 'image/png'];
 
-export const DROPZONE_ERROR_TO_MESSAGE: Record<UseDropZoneErrorCode, string> = {
-    MAX_FILES: `Максимальное количество файлов: ${MAX_FILES}`,
-    MAX_SIZE: `Максимальный размер файла: ${MAX_SIZE / 1024 ** 2} МБ`,
-    MIMETYPES: `Допустимые типы файлов: ${ALLOWED_TYPES.join(', ')}`
+export const DROPZONE_ERROR_TO_MESSAGE: Record<UseDropZoneErrorCode, { title: string; description: string }> = {
+    MAX_FILES: {
+        title: 'Превышено количество файлов',
+        description: `Максимальное количество файлов: ${MAX_FILES}`
+    },
+    MAX_SIZE: {
+        title: 'Превышен размер файла',
+        description: `Максимальный размер файла: ${MAX_SIZE / (1024 ** 2)} МБ`
+    },
+    MIMETYPES: {
+        title: 'Недопустимый тип файла',
+        description: `Допустимые типы файлов: ${ALLOWED_TYPES.join(', ')}`
+    }
 };
 
 export const LOADING_WORDS: Record<SportType, Array<string>> = {

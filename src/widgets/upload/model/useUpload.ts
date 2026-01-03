@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 
 import { hapticFeedbackImpactOccurred } from '@telegram-apps/sdk-react';
 import { isAxiosError } from 'axios';
+import { toast } from 'sonner';
 import { useShallow } from 'zustand/shallow';
 
 import type { SportType } from '@/features/sport-dropdown';
@@ -10,6 +11,7 @@ import { userActionsSelector, userSelector, useUser } from '@/entities/user';
 
 import { useDropZone, type UseDropZoneErrorCode } from '@/shared/hooks/useDropZone';
 import { useTimer } from '@/shared/hooks/useTimer';
+import { errorToastClassName } from '@/shared/model/constants';
 import type { Analysis, ApiFailureData } from '@/shared/model/types';
 
 import { uploadApi } from '../api';
@@ -20,16 +22,14 @@ export const useUpload = (onAnalysisReady: (analysis: Analysis) => void) => {
     const [isLoading, setIsLoading] = useState(false);
     const [image, setImage] = useState<{ file: File; url: string } | null>(null);
     const [sportType, setSportType] = useState<SportType | null>(null);
-    const [error, setError] = useState<string | null>(null);
     
     const { request_count, request_limit, isUnlimited, first_request_at, role } = useUser(useShallow(userSelector));
     const { updateRequestCount, onRequestLimitExceeded, updateFirstRequestAt } = useUser(useShallow(userActionsSelector));
     
     const isReachedLimit = request_limit === request_count;
-    const timer = useTimer(isReachedLimit ? (+new Date(+new Date(first_request_at!) + 1000 * 60 * 60 * 24) - Date.now()) / 1000 : null, {
-        onExpire: () => updateRequestCount('reset')
-    });
-    const mainButtonRef = useRef<HTMLDivElement>(null);
+    const isUnlimitedOrAdmin = isUnlimited || role === 'ADMIN';
+    const timer = useTimer(isReachedLimit ? (+new Date(+new Date(first_request_at!) + 1000 * 60 * 60 * 24) - Date.now()) / 1000 : null, { onExpire: () => updateRequestCount('reset') });
+    const mainButtonRef = useRef<HTMLButtonElement>(null);
     const delta = request_limit - request_count;
     const percent = Math.round((delta / request_limit) * 100);
 
@@ -37,12 +37,11 @@ export const useUpload = (onAnalysisReady: (analysis: Analysis) => void) => {
         try {
             if (!image || !sportType || isLoading || isReachedLimit) return;
 
-            setError(null);
             setIsLoading(true);
             
             hapticFeedbackImpactOccurred('medium');
 
-            !isUnlimited && role !== 'ADMIN' && updateRequestCount('inc');
+            !isUnlimitedOrAdmin && updateRequestCount('inc');
 
             const form = new FormData();
 
@@ -62,39 +61,19 @@ export const useUpload = (onAnalysisReady: (analysis: Analysis) => void) => {
                 setImage(null);
                 setSportType(null);
 
-                setError('Превышен лимит запросов');
-
-                hideMainButton();
+                toast.error('Превышен лимит запросов', { className: errorToastClassName });
 
                 updateFirstRequestAt(error.response.data.first_request_at!)
 
                 timer.start((+new Date(+new Date(error.response.data.first_request_at!) + 1000 * 60 * 60 * 24) - Date.now()) / 1000);
             } else {
-                setError('При выполнении запроса произошла ошибка');
-                !isUnlimited && role !== 'ADMIN' && updateRequestCount('dec');
+                toast.error('При выполнении запроса произошла ошибка', { className: errorToastClassName });
+                !isUnlimitedOrAdmin && updateRequestCount('dec');
             }
         } finally {
             setIsLoading(false);
         }
     };
-
-    const showMainButton = () => {
-        if (mainButtonRef.current?.classList.contains('hidden')) {
-            mainButtonRef.current.classList.remove('hidden');
-
-            requestAnimationFrame(() => {
-                mainButtonRef.current?.classList.remove('opacity-0', 'translate-y-10');
-                mainButtonRef.current?.classList.add('opacity-100', 'translate-y-0');
-            });
-        }
-    };
-
-    const hideMainButton = () => {
-        mainButtonRef.current?.classList.remove('opacity-100', 'translate-y-0');
-        mainButtonRef.current?.classList.add('opacity-0', 'translate-y-10');
-
-        setTimeout(() => mainButtonRef.current?.classList.add('hidden'), 310);
-    }
 
     const handleDropOrSelect = (_: DragEvent | React.ChangeEvent<HTMLInputElement>, files: Array<File>) => {
         if (isReachedLimit) return;
@@ -103,9 +82,6 @@ export const useUpload = (onAnalysisReady: (analysis: Analysis) => void) => {
 
         image && URL.revokeObjectURL(image.url);
 
-        sportType && showMainButton();
-
-        setError(null);
         setImage({ file, url: URL.createObjectURL(new Blob([file], { type: file.type })) });
     };
 
@@ -113,7 +89,6 @@ export const useUpload = (onAnalysisReady: (analysis: Analysis) => void) => {
         if (isReachedLimit) return;
 
         setSportType(sportType);
-        image && showMainButton();
     };
 
     const handleRemove = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -123,12 +98,17 @@ export const useUpload = (onAnalysisReady: (analysis: Analysis) => void) => {
         setImage(null);
 
         image && URL.revokeObjectURL(image.url);
-
-        hideMainButton();
     };
 
     const onDropZoneError = (code: UseDropZoneErrorCode) => {
-        setError(DROPZONE_ERROR_TO_MESSAGE[code]);
+        const { title, description } = DROPZONE_ERROR_TO_MESSAGE[code];
+
+        toast.error(title, {
+            className: errorToastClassName,
+            icon: null,
+            description,
+            descriptionClassName: 'text-sm! font-thin! text-primary-error!'
+        });
     };
 
     const { ref, isOvered, onChange } = useDropZone<HTMLLabelElement>({
@@ -146,10 +126,8 @@ export const useUpload = (onAnalysisReady: (analysis: Analysis) => void) => {
         timer,
         onStartAnalysis,
         onSportTypeChange,
-        setError,
         delta,
         isLoading,
-        error,
         mainButtonRef,
         request_limit,
         isOvered,

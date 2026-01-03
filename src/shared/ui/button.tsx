@@ -11,8 +11,8 @@ const buttonVariants = cva(
         variants: {
             variant: {
                 icon: 'bg-transparent',
-                error: 'bg-primary-error text-primary-white hover:bg-primary-error/80 focus-visible:bg-primary-error/80 focus-visible:ring-primary-error',
-                default: 'bg-primary-blue text-primary-white hover:bg-primary-blue/80 focus-visible:bg-primary-blue/80 focus-visible:ring-primary-blue'
+                error: 'bg-primary-error text-primary-white hover:bg-red-800 focus-visible:bg-primary-error/80 focus-visible:ring-primary-error',
+                default: 'bg-primary-blue text-primary-white hover:bg-blue-800 focus-visible:bg-primary-blue/80 focus-visible:ring-primary-blue'
             },
             size: {
                 default: 'h-9 px-4 py-2 has-[>svg]:px-3',
@@ -28,23 +28,19 @@ const buttonVariants = cva(
     }
 );
 
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
+export interface ButtonProps
+    extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+        VariantProps<typeof buttonVariants> {
     asChild?: boolean;
     cta?: boolean;
 }
 
-function Button({
-    className,
-    variant,
-    size,
-    cta,
-    asChild = false,
-    ...props
-}: ButtonProps) {
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className, variant, size, cta, asChild = false, ...props }: ButtonProps, ref) => {
     const Comp = asChild ? Slot : 'button';
 
     return (
         <Comp
+            ref={ref}
             data-slot='button'
             className={cn(
                 buttonVariants({ variant, size, className }),
@@ -53,6 +49,6 @@ function Button({
             {...props}
         />
     );
-}
+});
 
 export { Button, buttonVariants };

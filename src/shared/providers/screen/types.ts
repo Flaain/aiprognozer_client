@@ -16,3 +16,8 @@ export interface ScreenContextProps {
     currentScreen: Screen;
     changeScreen: (name: string, options?: ChangeScreenOptions) => void;
 }
+
+export interface ScreenProviderProps {
+    screens: Screens;
+    Layout?: (props: { children: React.ReactNode }) => React.ReactNode;
+}

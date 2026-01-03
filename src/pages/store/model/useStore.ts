@@ -25,11 +25,14 @@ export const useStore = () => {
 
     const { socket } = useSocket(useShallow((state) => state));
 
+    const controller = useRef<AbortController>(null!);
     const subscribers = useRef<Set<(event: string, _id: string) => void>>(new Set());
 
     const isStoreEmpty = useMemo(() => (store ? Object.values(store).every((products) => !products.length) : !isLoading && !isError), [isLoading, isError, store]);
 
     useEffect(() => {
+        controller.current = new AbortController();
+        
         fetchStore('init');
 
         socket.on(STORE_EVENTS.PRODUCT_BUY, ({ buyedProduct, newProduct, recalculatedPrices }: { buyedProduct: BuyedProduct, newProduct?: Product, recalculatedPrices?: Record<string, number> }) => {
@@ -69,6 +72,8 @@ export const useStore = () => {
 
         return () => {
             socket.off(STORE_EVENTS.PRODUCT_BUY);
+
+            controller.current.abort();
         };
     }, []);
 
@@ -115,7 +120,7 @@ export const useStore = () => {
 
             const { data } = await storeApi.getInvoice(product._id);
 
-            const status = await openInvoice(data, 'url');
+            const status = await openInvoice(data, 'url', { abortSignal: controller.current.signal });
 
             if (status === 'paid') {
             } else {

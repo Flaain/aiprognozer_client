@@ -3,6 +3,9 @@ import type { ApiExceptionCode } from './types';
 export const MAX_ID_LENGTH = 9;
 export const REQUEST_LIMIT = 10;
 
+export const mainToastClassName = 'bg-primary-dark-secondary/30! outline-none! border-none! backdrop-blur-xl!';
+export const errorToastClassName = `text-primary-error! ${mainToastClassName}`;
+
 export const ERROR_CODE_TO_MESSAGE: Record<ApiExceptionCode, string> = {
     REFERALL_ALREADY_TAKEN: 'Кто-то уже зарегистрировался с таким id',
     REFERALL_NOT_EXISTS: 'Не удалось найти пользователя с таким id',

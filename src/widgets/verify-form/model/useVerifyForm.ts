@@ -8,26 +8,22 @@ import { ERROR_CODE_TO_MESSAGE, MAX_ID_LENGTH } from "@/shared/model/constants";
 import type { ApiFailureData } from "@/shared/model/types";
 
 export const useVerifyForm = () => {
-    const [one_win_id, setOneWinId] = useState('');
+    const [oneWinId, setOneWinId] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string>('');
 
-    const isSubmitButtonDisabled = one_win_id.length < MAX_ID_LENGTH || isLoading;
+    const isSubmitButtonDisabled = oneWinId.length < MAX_ID_LENGTH || isLoading;
 
     const onChange = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
+        setError('');
+
         const vt = value.trim();
 
-        if (!vt.length) {
-            setOneWinId('');
-            setError('');
-
-            return;
-        }
+        if (!vt.length) return setOneWinId('');
 
         if (vt.length > MAX_ID_LENGTH || !/^\d+$/.test(value)) return;
 
         setOneWinId(value);
-        setError('');
     };
 
     const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -38,9 +34,9 @@ export const useVerifyForm = () => {
 
             setIsLoading(true);
 
-            await userApi.verify(one_win_id);
+            await userApi.verify(oneWinId);
 
-            useUser.getState().actions.onVerify();
+            useUser.getState().actions.onVerify(+oneWinId);
         } catch (error) {
             if (isAxiosError(error)) {
                 const { response } = error as AxiosError<ApiFailureData>;
@@ -55,7 +51,7 @@ export const useVerifyForm = () => {
     };
 
     return {
-        one_win_id,
+        oneWinId,
         isLoading,
         error,
         isSubmitButtonDisabled,
