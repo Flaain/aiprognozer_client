@@ -6,10 +6,8 @@ import { useTimer } from '@/shared/hooks/useTimer';
 import { LoadingButton } from '@/shared/ui/loading-button';
 import { Typography } from '@/shared/ui/typography';
 
-import { PRODUCT_EVENTS } from '../model/constants';
+import { $24h, PRODUCT_EVENTS } from '../model/constants';
 import type { ProductProps } from '../model/types';
-
-const $24h = 1000 * 60 * 60 * 24;
 
 export const DailyProduct = ({ product, onBuy, onTimerExpired, subscribe, isPurchaseInProgress, as }: ProductProps & { onTimerExpired: (_id: string) => void }) => {
     const Component = as ?? 'div';
