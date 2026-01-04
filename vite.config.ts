@@ -8,6 +8,9 @@ import { defineConfig } from 'vite';
 // https://vite.dev/config/
 export default defineConfig({
     plugins: [svgr({ dimensions: false, svgo: false, typescript: true }), react(), tailwindcss()],
+    server: {
+        allowedHosts: ['m5jem8-31-180-136-152.ru.tuna.am']
+    },
     resolve: {
         alias: {
             '@': path.resolve(__dirname, './src')
