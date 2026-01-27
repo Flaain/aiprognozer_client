@@ -1,9 +1,8 @@
-import { ShieldIcon } from '@/shared/lib/assets/icons';
+import { AttentionIcon, ShieldIcon } from '@/shared/lib/assets/icons';
 
 import { Container } from '@/shared/ui/container';
 import { Input } from '@/shared/ui/input';
 import { LoadingButton } from '@/shared/ui/loading-button';
-import { Notice } from '@/shared/ui/notice';
 import { Typography } from '@/shared/ui/typography';
 
 import { useVerifyForm } from '../model/useVerifyForm';
@@ -55,10 +54,12 @@ export const VerifyForm = () => {
                         Подтвердить
                     </LoadingButton>
                 </form>
-                <Notice
-                    title='Нет ID?'
-                    variant='primary'
-                    description={
+                <div className='flex !gap-4 !justify-start !items-start !cursor-default overflow-hidden !rounded-[10px] bg-primary-blue-transparent border border-primary-blue/30'>
+                    <AttentionIcon className='size-6 self-start text-primary-blue' />
+                    <div className='flex flex-col items-start gap-2'>
+                        <Typography as='h2' weight='semibold' size='sm'>
+                            Нет ID?
+                        </Typography>
                         <Typography
                             as='p'
                             variant='secondary'
@@ -84,9 +85,8 @@ export const VerifyForm = () => {
                             </Typography>
                             &nbsp;и зарегистрируйтесь по ссылке
                         </Typography>
-                    }
-                    status='attention'
-                />
+                    </div>
+                </div>
             </div>
         </Container>
     );
