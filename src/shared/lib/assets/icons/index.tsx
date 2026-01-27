@@ -17,3 +17,5 @@ export { ReactComponent as ZipIcon } from './zip.svg';
 export { ReactComponent as ReferralsIcon } from './referrals.svg';
 export { ReactComponent as CopyIcon } from './copy.svg';
 export { ReactComponent as CheckIcon } from './check.svg';
+export { ReactComponent as TasksIcon } from './tasks.svg';
+export { ReactComponent as SendIcon } from './send.svg';
