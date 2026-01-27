@@ -1,18 +1,11 @@
 import { cn } from '@/shared/lib/utils';
+import type { SkeletonProps } from '@/shared/model/types';
 import { Container } from '@/shared/ui/container';
 import { LoadingButton } from '@/shared/ui/loading-button';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { Typography } from '@/shared/ui/typography';
 
-export const ReferralsSkeleton = ({
-    isError,
-    refetch,
-    isRefetching
-}: {
-    isError?: boolean;
-    refetch?: () => void;
-    isRefetching?: boolean;
-}) => (
+export const ReferralsSkeleton = ({ isError, refetch, isRefetching }: SkeletonProps) => (
     <Container
         as='div'
         className={cn('flex-1 flex flex-col gap-5 overflow-y-auto relative', isError && 'overflow-hidden')}
