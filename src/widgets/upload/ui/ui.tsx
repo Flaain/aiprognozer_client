@@ -11,7 +11,10 @@ import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { LoadingButton } from '@/shared/ui/loading-button';
+import { Progressbar } from '@/shared/ui/progressbar';
+import { Skeleton } from '@/shared/ui/skeleton';
 import { Typography } from '@/shared/ui/typography';
+import { getTimerString } from '@/shared/utils/getTimerString';
 
 import { ALLOWED_TYPES, LOADING_WORDS } from '../model/constants';
 import type { UploadProps } from '../model/types';
@@ -22,7 +25,6 @@ export const Upload = ({ onAnalysisReady }: UploadProps) => {
         onChange,
         onStartAnalysis,
         handleRemove,
-        mainButtonRef,
         sportType,
         timer,
         onSportTypeChange,
@@ -33,20 +35,21 @@ export const Upload = ({ onAnalysisReady }: UploadProps) => {
         isOvered,
         ref,
         percent,
-        isLoading
+        isAnalyzing,
+        isStatusLoading
     } = useUpload(onAnalysisReady);
 
     const { isUnlimited, role } = useUser(useShallow(userSelector));
 
     return (
         <>
-            <SportDropdown onSelect={onSportTypeChange} value={sportType} disabled={isLoading || isReachedLimit} />
+            <SportDropdown onSelect={onSportTypeChange} value={sportType} disabled={isAnalyzing || isReachedLimit} />
             <label
                 ref={ref}
                 className={cn(
                     'relative min-h-[350px] flex-1 self-stretch transition-colors ease-in-out border-primary-white-secondary/30 duration-300 flex flex-col p-5 max-sm:p-3 items-center justify-center gap-1 box-border border-2 border-dashed rounded-[14px]',
-                    isOvered && !isLoading && 'border-primary-blue bg-primary-blue-transparent',
-                    !isLoading && !isReachedLimit && 'cursor-pointer hover:[&:not(:has(button:hover))]:border-primary-blue',
+                    isOvered && !isAnalyzing && 'border-primary-blue bg-primary-blue-transparent',
+                    !isAnalyzing && !isReachedLimit && 'cursor-pointer hover:[&:not(:has(button:hover))]:border-primary-blue'
                 )}
             >
                 <Input
@@ -54,16 +57,15 @@ export const Upload = ({ onAnalysisReady }: UploadProps) => {
                     className='sr-only'
                     onChange={onChange}
                     accept='image/jpeg, image/png'
-                    disabled={isLoading || isReachedLimit}
+                    disabled={isAnalyzing || isReachedLimit}
                 />
-                {isLoading && sportType && image && (
+                {isAnalyzing && sportType && image && (
                     <div className='left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 px-3 absolute z-10 gap-2 max-sm:max-w-[300px] max-w-[500px] w-full overflow-hidden h-14'>
                         {LOADING_WORDS[sportType].map((word, index, arr) => {
                             if (index === arr.length - 1) {
                                 return (
                                     <Fragment key={'fragment-loader-words-list'}>
                                         <Typography
-                                            key={index}
                                             size='md'
                                             weight='bold'
                                             className='flex items-center justify-center text-primary-white size-full animate-text-loader text-center'
@@ -71,7 +73,6 @@ export const Upload = ({ onAnalysisReady }: UploadProps) => {
                                             {word}
                                         </Typography>
                                         <Typography
-                                            key={`${0}-dublicated`}
                                             size='md'
                                             weight='bold'
                                             className='flex items-center justify-center text-primary-white size-full animate-text-loader text-center'
@@ -97,9 +98,9 @@ export const Upload = ({ onAnalysisReady }: UploadProps) => {
                 )}
                 {image ? (
                     <div className='flex size-full grow-1 overflow-hidden rounded-[14px]'>
-                        {!isLoading && (
+                        {!isAnalyzing && (
                             <Button
-                                disabled={isLoading}
+                                disabled={isAnalyzing}
                                 variant='error'
                                 size='icon'
                                 className='ml-auto absolute rounded-tr-[14px] rounded-tl-none rounded-br-none max-sm:right-3 max-sm:top-3 right-5 top-5 z-10'
@@ -112,7 +113,7 @@ export const Upload = ({ onAnalysisReady }: UploadProps) => {
                             src={image.url}
                             className={cn(
                                 'object-cover object-center rounded-[14px] size-full transition-all ease-in-out duration-300',
-                                isLoading && 'blur-xs opacity-50 grayscale-100'
+                                isAnalyzing && 'blur-xs opacity-50 grayscale-100'
                             )}
                         />
                     </div>
@@ -130,11 +131,13 @@ export const Upload = ({ onAnalysisReady }: UploadProps) => {
                                 <Typography as='h2' size='2xl' weight='semibold'>
                                     Достигнут лимит запросов
                                 </Typography>
-                                <Typography as='p' variant='secondary' weight='thin' className='text-pretty'>
-                                    Запросы обнулятся через:&nbsp;{timer.hours.toString().padStart(2, '0')}:
-                                    {timer.minutes.toString().padStart(2, '0')}:
-                                    {timer.seconds.toString().padStart(2, '0')}
-                                </Typography>
+                                {isStatusLoading ? (
+                                    <Skeleton className='w-2/3 h-5 rounded-lg before:border-none' />
+                                ) : (
+                                    <Typography as='p' variant='secondary' weight='thin' className='text-pretty text-center'>
+                                        Запросы обнулятся через:&nbsp;{getTimerString(timer)}
+                                    </Typography>
+                                )}
                             </>
                         ) : (
                             <>
@@ -149,14 +152,14 @@ export const Upload = ({ onAnalysisReady }: UploadProps) => {
                     </div>
                 )}
                 <LoadingButton
-                    ref={mainButtonRef}
-                    cta={!isLoading && !!image && !!sportType}
+                    cta={!isAnalyzing && !!image && !!sportType}
                     onClick={onStartAnalysis}
-                    className={cn('disabled:opacity-100 h-12 rounded-b-[14px] rounded-t-none flex z-10 absolute inset-x-5 max-sm:inset-x-3 w-auto bottom-5 max-sm:bottom-3 transition-all duration-200 ease-in-out',
+                    className={cn(
+                        'disabled:opacity-100 h-12 rounded-b-[14px] rounded-t-none flex z-10 absolute inset-x-5 max-sm:inset-x-3 w-auto bottom-5 max-sm:bottom-3 transition-all duration-200 ease-in-out',
                         !image || !sportType ? 'opacity-0! pointer-events-none translate-y-2' : 'opacity-100 pointer-events-auto translate-y-0'
                     )}
-                    disabled={!image || !sportType || isLoading}
-                    isLoading={isLoading}
+                    disabled={!image || !sportType || isAnalyzing}
+                    isLoading={isAnalyzing}
                 >
                     <AiIcon className='text-primary-white size-5' />
                     Запустить анализ
@@ -175,14 +178,7 @@ export const Upload = ({ onAnalysisReady }: UploadProps) => {
                             {delta} / {request_limit}
                         </Typography>
                     </div>
-                    <div className='flex items-center'>
-                        <div className='grow-1 h-1.5 bg-primary-white-secondary/30 rounded-full relative'>
-                            <div
-                                className='absoute h-1.5 bg-primary-blue rounded-full transition-all duration-1000 ease-in-out'
-                                style={{ width: `${percent}%` }}
-                            ></div>
-                        </div>
-                    </div>
+                    <Progressbar progress={percent} />
                 </div>
             )}
         </>

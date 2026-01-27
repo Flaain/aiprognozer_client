@@ -30,18 +30,22 @@ const init = async (debug: boolean) => {
         if (!miniApp.isSupported()) {
             throw new Error('MINIAPP_NOT_SUPPORTED');
         }
-
-        await viewport.mount();
-
+        
+        if (viewport.mount.isAvailable()) {
+            try {
+                await viewport.mount({ timeout: 5000 });
+            } catch (error) {
+                console.error(`Failed to mount viewport: ${error}`);
+            }
+        }
+        
         if (retrieveLaunchParams().tgWebAppPlatform !== 'tdesktop' && viewport.requestFullscreen.isAvailable()) {
             await viewport.requestFullscreen();
-        } else {
-            document.documentElement.style.setProperty('--pt-main', '0px');
         }
 
         miniApp.mountSync();
 
-        viewport.bindCssVars();
+        viewport.bindCssVars.isAvailable() && viewport.bindCssVars();
         miniApp.bindCssVars();
 
         initData.restore();

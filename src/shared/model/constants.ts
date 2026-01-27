@@ -1,17 +1,13 @@
-import type { ApiExceptionCode } from './types';
+export const ONE_DAY_IN_MILLISECONDS = 1000 * 60 * 60 * 24;
+export const ONE_DAY_IN_SECONDS = 86400;
 
 export const MAX_ID_LENGTH = 9;
 export const REQUEST_LIMIT = 10;
 
-export const mainToastClassName = 'bg-primary-dark-secondary/30! outline-none! border-none! backdrop-blur-xl!';
-export const errorToastClassName = `text-primary-error! ${mainToastClassName}`;
+export const toastClassName = 'bg-primary-dark-secondary/30! outline-none! border-none! backdrop-blur-xl! p-3!';
 
-export const ERROR_CODE_TO_MESSAGE: Record<ApiExceptionCode, string> = {
-    REFERRAL_ALREADY_TAKEN: 'Кто-то уже зарегистрировался с таким id',
-    REFERRAL_NOT_EXISTS: 'Не удалось найти пользователя с таким id',
-    ALREADY_VERIFIED: 'Вы уже прошли верификацию',
-    REQUEST_LIMIT_EXCEEDED: 'Превышен лимит запросов'
-};
+export const toastMainColors = `${toastClassName} text-primary-white!`;
+export const toastErrorColors = `${toastClassName} text-primary-error!`;
 
 export const PRODUCT_EFFECT_TYPE = {
     INC: 'inc',

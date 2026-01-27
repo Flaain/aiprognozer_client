@@ -1,11 +1,13 @@
 import { useState } from "react";
 
-import { isAxiosError, type AxiosError } from "axios";
+import { isAxiosError } from "axios";
 
 import { userApi, useUser } from "@/entities/user";
 
-import { ERROR_CODE_TO_MESSAGE, MAX_ID_LENGTH } from "@/shared/model/constants";
+import { MAX_ID_LENGTH } from "@/shared/model/constants";
 import type { ApiFailureData } from "@/shared/model/types";
+
+import { ERROR_CODE_TO_MESSAGE } from "./constants";
 
 export const useVerifyForm = () => {
     const [oneWinId, setOneWinId] = useState('');
@@ -38,10 +40,8 @@ export const useVerifyForm = () => {
 
             useUser.getState().actions.onVerify(+oneWinId);
         } catch (error) {
-            if (isAxiosError(error)) {
-                const { response } = error as AxiosError<ApiFailureData>;
-
-                setError(response?.data.code ? ERROR_CODE_TO_MESSAGE[response.data.code] : 'При выполнении запроса произошла ошибка');
+            if (isAxiosError<ApiFailureData>(error) && error.response?.data.code) {
+                setError(ERROR_CODE_TO_MESSAGE[error.response.data.code as keyof typeof ERROR_CODE_TO_MESSAGE]);
             } else {
                 setError('При выполнении запроса произошла ошибка');
             }

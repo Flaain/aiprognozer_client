@@ -5,5 +5,4 @@ export interface ProductProps {
     as?: React.ElementType;
     isPurchaseInProgress?: boolean;
     onBuy: () => Promise<void>;
-    subscribe: (subscriber: (event: string, _id: string) => void) => () => void;
 }

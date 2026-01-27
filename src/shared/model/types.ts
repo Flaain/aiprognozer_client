@@ -1,9 +1,17 @@
-import type { PRODUCT_EFFECT_TYPE, PRODUCT_TYPE } from "./constants";
+import type { PRODUCT_EFFECT_TYPE, PRODUCT_TYPE } from './constants';
 
 export type Setter<T> = (state: Partial<T> | ((state: T) => Partial<T>)) => void;
-export type ApiExceptionCode = 'REFERRAL_NOT_EXISTS' | 'REFERRAL_ALREADY_TAKEN' | 'ALREADY_VERIFIED' | 'REQUEST_LIMIT_EXCEEDED';
-export type ProductEffectType = typeof PRODUCT_EFFECT_TYPE[keyof typeof PRODUCT_EFFECT_TYPE];
-export type BuyedProduct = Required<Pick<Product, '_id' | 'type' | 'payedAt' | 'effect' | 'slug'>>;
+export type ApiExceptionCode =
+    | 'REFERRAL_NOT_EXISTS'
+    | 'REFERRAL_ALREADY_TAKEN'
+    | 'ALREADY_VERIFIED'
+    | 'REQUEST_LIMIT_EXCEEDED'
+    | 'TASK_NOT_EXISTS'
+    | 'TASK_ALREADY_CLAIMED'
+    | 'NOT_MEMBER_OF_CHAT';
+
+export type ProductEffectType = (typeof PRODUCT_EFFECT_TYPE)[keyof typeof PRODUCT_EFFECT_TYPE];
+export type BuyedProduct = Required<Pick<Product, '_id' | 'type' | 'payedAt' | 'effect' | 'slug' | 'nextPayAvailableAt'>>;
 export type ProductType = keyof typeof PRODUCT_TYPE;
 
 export interface ProductEffect {
@@ -21,6 +29,7 @@ export interface Product {
     type: ProductType;
     canBuy?: boolean;
     payedAt?: string;
+    nextPayAvailableAt?: number;
     prev?: string | null;
     next?: string | null;
     effect?: Array<ProductEffect>;
@@ -37,7 +46,7 @@ export interface User {
     isVerified: boolean;
     onewin_id?: number;
     role: 'USER' | 'ADMIN';
-    
+
     [key: string]: any; // temp solution
 }
 
@@ -53,13 +62,14 @@ export interface ApiDefaultSuccessResponse {
     message: string;
 }
 
-export interface ApiFailureData {
+export interface ApiFailureData<T = undefined> {
     message: string;
     timestamp: string;
     code?: ApiExceptionCode;
     path: string;
     statusCode: number;
-    first_request_at?: string;
+    method: string;
+    data?: T;
 }
 
 export interface Prediction {
@@ -72,4 +82,12 @@ export interface Prediction {
 export interface Analysis {
     prediction: Prediction;
     alternatives: Array<Omit<Prediction, 'reasoning'>>;
+}
+
+export interface SkeletonProps {
+    refetch?: () => Promise<void>;
+    isRefetching?: boolean;
+    isError?: boolean;
+    errorDescription?: string;
+    errorTitle?: string;
 }

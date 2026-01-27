@@ -2,7 +2,6 @@ import { ReferralsList } from '@/widgets/referrals-list';
 
 import { CheckIcon, CopyIcon } from '@/shared/lib/assets/icons';
 
-import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui/button';
 import { Container } from '@/shared/ui/container';
 import { LoadingButton } from '@/shared/ui/loading-button';
@@ -35,7 +34,7 @@ export const Referrals = () => {
     }
 
     return (
-        <Container as='div' className={cn('flex-1 flex flex-col gap-5 overflow-y-auto', isError && 'overflow-hidden')}>
+        <Container as='div' className='flex-1 flex flex-col gap-5 overflow-y-auto'>
             <div className=' flex flex-col items-start gap-2 p-5 max-sm:p-3 rounded-[14px] bg-linear-to-br from-primary-dark-secondary to-transparent'>
                 <Typography as='h1' size='xl' weight='bold' className='text-start text-pretty'>
                     Приглашайте друзей и получайте бонусы

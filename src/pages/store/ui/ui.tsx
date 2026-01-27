@@ -13,18 +13,7 @@ import { useStore } from '../model/useStore';
 import { StoreSkeleton } from './skeleton';
 
 export const Store = () => {
-    const {
-        store,
-        isLoading,
-        processingIds,
-        isRefetching,
-        isError,
-        isStoreEmpty,
-        onDailyTimerExpired,
-        refetch,
-        subscribe,
-        handleBuyProduct
-    } = useStore();
+    const { store, isLoading, processingIds, isRefetching, isError, isStoreEmpty, onDailyTimerExpired, refetch, handleBuyProduct } = useStore();
 
     if (isLoading || isError || isStoreEmpty) {
         return (
@@ -51,7 +40,6 @@ export const Store = () => {
                     {store?.DAILY.map((product) => (
                         <Suspense key={product._id} fallback={<ProductSkeleton type='DAILY' />}>
                             <DailyProduct
-                                subscribe={subscribe}
                                 onBuy={() => handleBuyProduct(product)}
                                 product={product}
                                 isPurchaseInProgress={processingIds.includes(product._id)}
@@ -65,12 +53,10 @@ export const Store = () => {
                 <StoreWindow
                     title='Увелечение лимита'
                     icon={<UpChartIcon className='text-primary-blue size-6' />}
-                    className='duration-400'
                 >
                     {store?.LADDER.map((product) => (
                         <Suspense key={product._id} fallback={<ProductSkeleton type='LADDER' />}>
                             <Product
-                                subscribe={subscribe}
                                 onBuy={() => handleBuyProduct(product)}
                                 product={product}
                                 isPurchaseInProgress={processingIds.includes(product._id)}

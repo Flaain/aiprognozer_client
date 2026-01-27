@@ -8,7 +8,7 @@ import { StoreSkeleton } from './ui/skeleton';
 export const StoreScreen: ScreenObject = {
     name: 'store',
     element: (
-        <Suspense fallback={<StoreSkeleton shouldAnimate />}>
+        <Suspense fallback={<StoreSkeleton />}>
             <View />
         </Suspense>
     )

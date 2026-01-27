@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { hapticFeedbackImpactOccurred } from '@telegram-apps/sdk-react';
 import { isAxiosError } from 'axios';
@@ -11,7 +11,7 @@ import { userActionsSelector, userSelector, useUser } from '@/entities/user';
 
 import { useDropZone, type UseDropZoneErrorCode } from '@/shared/hooks/useDropZone';
 import { useTimer } from '@/shared/hooks/useTimer';
-import { errorToastClassName } from '@/shared/model/constants';
+import { toastErrorColors } from '@/shared/model/constants';
 import type { Analysis, ApiFailureData } from '@/shared/model/types';
 
 import { uploadApi } from '../api';
@@ -19,25 +19,50 @@ import { uploadApi } from '../api';
 import { DROPZONE_ERROR_TO_MESSAGE, MAX_SIZE, MIMETYPES } from './constants';
 
 export const useUpload = (onAnalysisReady: (analysis: Analysis) => void) => {
-    const [isLoading, setIsLoading] = useState(false);
+    const { request_count, request_limit, isUnlimited, role } = useUser(useShallow(userSelector));
+    const { updateRequestCount, onRequestLimitExceeded, updateFirstRequestAt } = useUser(useShallow(userActionsSelector));
+    
+    const timer = useTimer(null, { immediately: false, onExpire: () => updateRequestCount('reset') });
+
+    const isReachedLimit = request_limit === request_count;
+    const isUnlimitedOrAdmin = isUnlimited || role === 'ADMIN';
+
+    const [isAnalyzing, setIsAnalyzing] = useState(false);
+    const [isStatusLoading, setIsStatusLoading] = useState(isReachedLimit);
+
     const [image, setImage] = useState<{ file: File; url: string } | null>(null);
     const [sportType, setSportType] = useState<SportType | null>(null);
     
-    const { request_count, request_limit, isUnlimited, first_request_at, role } = useUser(useShallow(userSelector));
-    const { updateRequestCount, onRequestLimitExceeded, updateFirstRequestAt } = useUser(useShallow(userActionsSelector));
-    
-    const isReachedLimit = request_limit === request_count;
-    const isUnlimitedOrAdmin = isUnlimited || role === 'ADMIN';
-    const timer = useTimer(isReachedLimit ? (+new Date(+new Date(first_request_at!) + 1000 * 60 * 60 * 24) - Date.now()) / 1000 : null, { onExpire: () => updateRequestCount('reset') });
-    const mainButtonRef = useRef<HTMLButtonElement>(null);
+    useEffect(() => {
+        if (isUnlimitedOrAdmin || !isReachedLimit) return;
+        
+        const controller = new AbortController();
+
+        (async () => {
+            try {
+                const { data } = await uploadApi.status(controller.signal);
+
+                setIsStatusLoading(false);
+
+                timer.start(data.nextRequestsAvailableAt ?? 0);
+            } catch (error) {
+                console.error(error);
+            }
+        })();
+
+        return () => {
+            controller.abort();
+        }
+    }, []);
+
     const delta = request_limit - request_count;
     const percent = Math.round((delta / request_limit) * 100);
 
     const onStartAnalysis = async () => {
         try {
-            if (!image || !sportType || isLoading || isReachedLimit) return;
+            if (!image || !sportType || isAnalyzing) return;
 
-            setIsLoading(true);
+            setIsAnalyzing(true);
             
             hapticFeedbackImpactOccurred('medium');
 
@@ -51,27 +76,26 @@ export const useUpload = (onAnalysisReady: (analysis: Analysis) => void) => {
 
             onAnalysisReady(analysis);
             updateFirstRequestAt(first_request_at);
-
-            setImage(null);
-            setSportType(null);
         } catch (error) {
-            if (isAxiosError<ApiFailureData>(error) && error.response?.data.code === 'REQUEST_LIMIT_EXCEEDED') {
-                onRequestLimitExceeded();
-                
+            if (
+                isAxiosError<ApiFailureData<{ first_request_at: string; nextRequestsAvailableAt: number }>>(error) &&
+                error.response?.data.code === 'REQUEST_LIMIT_EXCEEDED'
+            ) {
+                onRequestLimitExceeded(error.response.data.data?.first_request_at!);
+
                 setImage(null);
                 setSportType(null);
 
-                toast.error('Превышен лимит запросов', { className: errorToastClassName });
+                timer.start(error.response.data.data!.nextRequestsAvailableAt);
 
-                updateFirstRequestAt(error.response.data.first_request_at!)
-
-                timer.start((+new Date(+new Date(error.response.data.first_request_at!) + 1000 * 60 * 60 * 24) - Date.now()) / 1000);
+                toast.error('Превышен лимит запросов', { className: toastErrorColors, icon: null });
             } else {
-                toast.error('При выполнении запроса произошла ошибка', { className: errorToastClassName });
+                toast.error('При выполнении запроса произошла ошибка', { className: toastErrorColors, icon: null });
+
                 !isUnlimitedOrAdmin && updateRequestCount('dec');
             }
         } finally {
-            setIsLoading(false);
+            setIsAnalyzing(false);
         }
     };
 
@@ -103,18 +127,13 @@ export const useUpload = (onAnalysisReady: (analysis: Analysis) => void) => {
     const onDropZoneError = (code: UseDropZoneErrorCode) => {
         const { title, description } = DROPZONE_ERROR_TO_MESSAGE[code];
 
-        toast.error(title, {
-            className: errorToastClassName,
-            icon: null,
-            description,
-            descriptionClassName: 'text-sm! font-thin! text-primary-error!'
-        });
+        toast.error(title, { className: toastErrorColors, icon: null, description });
     };
 
     const { ref, isOvered, onChange } = useDropZone<HTMLLabelElement>({
         maxSize: MAX_SIZE,
         mimetypes: MIMETYPES,
-        disabled: isLoading || isReachedLimit,
+        disabled: isAnalyzing || isReachedLimit,
         onDrop: handleDropOrSelect,
         onSelect: handleDropOrSelect,
         onError: onDropZoneError
@@ -123,12 +142,12 @@ export const useUpload = (onAnalysisReady: (analysis: Analysis) => void) => {
     return {
         ref,
         sportType,
-        timer,
+        isStatusLoading,
         onStartAnalysis,
         onSportTypeChange,
         delta,
-        isLoading,
-        mainButtonRef,
+        timer,
+        isAnalyzing,
         request_limit,
         isOvered,
         onChange,

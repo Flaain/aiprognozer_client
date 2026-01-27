@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-export const getTimeFromSeconds = (timestamp: number) => {
+const getTimeFromSeconds = (timestamp: number) => {
     const roundedTimestamp = Math.ceil(timestamp);
     const days = Math.floor(roundedTimestamp / (60 * 60 * 24));
     const hours = Math.floor((roundedTimestamp % (60 * 60 * 24)) / (60 * 60));
@@ -25,17 +25,20 @@ export const useTimer = (s?: number | null, { immediately = true, onExpire }: Us
 
     const [seconds, setSeconds] = useState(inital);
 
-    useEffect(() => {
-        if (inital <= 0 || !immediately) return;
+    const intervalRef = useRef<ReturnType<typeof setInterval>>(null);
 
-        start(inital);
+    useEffect(() => {
+        if (inital <= 0) {
+            setSeconds(0);
+            return;
+        }
+
+        immediately && start(inital);
 
         return () => {
             intervalRef.current && clearInterval(intervalRef.current);
         }
-    }, []);
-
-    const intervalRef = useRef<ReturnType<typeof setInterval>>(null);
+    }, [inital]);
 
     const start = (seconds: number) => {
         if (seconds <= 0) return;
