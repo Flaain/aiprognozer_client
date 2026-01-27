@@ -7,7 +7,8 @@ export interface UserStore {
         onVerify: (onewin_id: number) => void;
         updateRequestCount: (action: 'inc' | 'dec' | 'reset') => void;
         updateFirstRequestAt: (date: string) => void;
-        onRequestLimitExceeded: () => void;
+        onRequestLimitExceeded: (first_request_at: string) => void;
         applyProductEffect: (effect: Array<ProductEffect>) => void;
+        onTaskClaim: (reward: number) => void;
     };
 }

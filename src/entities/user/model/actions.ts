@@ -6,7 +6,13 @@ import type { UserStore } from './types';
 export const userActions = (set: Setter<UserStore>, get: () => UserStore): UserStore['actions'] => ({
     onSignin: (user) => set({ user }),
     onVerify: (onewin_id: number) => set((prevState) => ({ user: { ...prevState.user, isVerified: true, onewin_id } })),
-    onRequestLimitExceeded: () => set((prevState) => ({ user: { ...prevState.user, request_count: prevState.user.request_limit } })),
+    onRequestLimitExceeded: (first_request_at: string) => set((prevState) => ({
+        user: {
+            ...prevState.user,
+            request_count: prevState.user.request_limit,
+            first_request_at
+        }
+    })),
     updateFirstRequestAt: (date) => set((prevState) => ({ user: { ...prevState.user, first_request_at: date } })),
     updateRequestCount: (action: 'inc' | 'dec' | 'reset') => set((prevState) => ({
         user: {
@@ -16,7 +22,7 @@ export const userActions = (set: Setter<UserStore>, get: () => UserStore): UserS
     })),
     applyProductEffect: (effect) => {
         const { user } = get();
-        
+
         let atleastOneEffectApplied = false;
 
         for (const { value, effect_type, target } of effect.filter(({ target }) => user.hasOwnProperty(target))) {
@@ -47,5 +53,11 @@ export const userActions = (set: Setter<UserStore>, get: () => UserStore): UserS
         }
 
         atleastOneEffectApplied && set({ user });
-    }
+    },
+    onTaskClaim: (reward: number) => set((prevState) => ({ 
+        user: {
+            ...prevState.user, 
+            request_limit: prevState.user.request_limit + reward 
+        }
+    }))
 });
