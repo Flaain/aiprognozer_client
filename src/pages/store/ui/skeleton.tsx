@@ -3,13 +3,12 @@ import { StoreWindowSkeleton } from '@/widgets/store-window';
 import { ProductSkeleton } from '@/entities/product';
 
 import { cn } from '@/shared/lib/utils';
+import type { SkeletonProps } from '@/shared/model/types';
 import { Container } from '@/shared/ui/container';
 import { LoadingButton } from '@/shared/ui/loading-button';
 import { Typography } from '@/shared/ui/typography';
 
-import type { StoreSkeletonProps } from '../model/types';
-
-export const StoreSkeleton = ({ shouldAnimate, refetch, isRefetching, isError, errorDescription, errorTitle }: StoreSkeletonProps) => (
+export const StoreSkeleton = ({ refetch, isRefetching, isError, errorDescription, errorTitle }: SkeletonProps) => (
     <Container
         as='div'
         className={cn(
@@ -30,10 +29,10 @@ export const StoreSkeleton = ({ shouldAnimate, refetch, isRefetching, isError, e
                 </LoadingButton>
             </div>
         )}
-        <StoreWindowSkeleton shouldAnimate={shouldAnimate}>
+        <StoreWindowSkeleton>
             <ProductSkeleton type='DAILY' />
         </StoreWindowSkeleton>
-        <StoreWindowSkeleton className='duration-400' shouldAnimate={shouldAnimate}>
+        <StoreWindowSkeleton>
             <ProductSkeleton />
             <ProductSkeleton />
             <ProductSkeleton />
