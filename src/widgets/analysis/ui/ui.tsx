@@ -1,6 +1,7 @@
 import { useBackButtonTelegram } from '@/shared/hooks/useBackButton';
 import type { Analysis as IAnalysis } from '@/shared/model/types';
 import { Counter } from '@/shared/ui/counter';
+import { Progressbar } from '@/shared/ui/progressbar';
 import { Typography } from '@/shared/ui/typography';
 
 export const Analysis = ({ analysis, onBack }: { analysis: IAnalysis; onBack: () => void; }) => {
@@ -56,14 +57,7 @@ export const Analysis = ({ analysis, onBack }: { analysis: IAnalysis; onBack: ()
                                 </div>
                                 <Typography>{probability}%</Typography>
                             </div>
-                            <div className='flex items-center'>
-                                <div className='grow-1 h-1.5 bg-primary-white-secondary/30 rounded-full relative'>
-                                    <div
-                                        className='absoute h-1.5 bg-primary-blue rounded-full transition-all duration-1000 ease-in-out'
-                                        style={{ width: `${probability}%` }}
-                                    ></div>
-                                </div>
-                            </div>
+                            <Progressbar progress={probability} />
                         </li>
                     ))}
                 </ul>
