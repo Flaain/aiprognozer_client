@@ -1,29 +1,20 @@
-import { useEffect } from 'react';
-
 import { StarIcon } from '@/shared/lib/assets/icons';
 
 import { useTimer } from '@/shared/hooks/useTimer';
+import { ONE_DAY_IN_SECONDS } from '@/shared/model/constants';
 import { LoadingButton } from '@/shared/ui/loading-button';
 import { Typography } from '@/shared/ui/typography';
+import { getTimerString } from '@/shared/utils/getTimerString';
 
-import { $24h, PRODUCT_EVENTS } from '../model/constants';
 import type { ProductProps } from '../model/types';
 
-export const DailyProduct = ({ product, onBuy, onTimerExpired, subscribe, isPurchaseInProgress, as }: ProductProps & { onTimerExpired: (_id: string) => void }) => {
+export const DailyProduct = ({ product, onBuy, onTimerExpired, isPurchaseInProgress, as }: ProductProps & { onTimerExpired: (_id: string) => void }) => {
     const Component = as ?? 'div';
-    const availableAt = product.canBuy ? null : +new Date(+new Date(product.payedAt!) + $24h) / 1000 - Date.now() / 1000 - 1;
 
-    const { hours, minutes, seconds, start } = useTimer(availableAt, { onExpire: () => onTimerExpired(product._id) });
-
-    useEffect(() => {
-        const unsubscribe = subscribe((event, _id) => {
-            event === PRODUCT_EVENTS.PRODUCT_BUY && _id === product._id && start($24h - 1);
-        });
-
-        return () => {
-            unsubscribe();
-        };
-    }, []);
+    const timer = useTimer(
+        product.canBuy ? null : ONE_DAY_IN_SECONDS === product.nextPayAvailableAt ? ONE_DAY_IN_SECONDS - 1 : product.nextPayAvailableAt, 
+        { onExpire: () => onTimerExpired(product._id) }
+    );
 
     return (
         <Component className='flex flex-col gap-4 bg-linear-to-br from-primary-blue/50 to-primary-blue-transparent/10 p-4 rounded-[14px]'>
@@ -52,7 +43,7 @@ export const DailyProduct = ({ product, onBuy, onTimerExpired, subscribe, isPurc
                             <StarIcon className='text-yellow-500 size-6' />
                         </>
                     ) : (
-                        `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+                        `${getTimerString(timer)}`
                     )}
                 </LoadingButton>
             </div>
