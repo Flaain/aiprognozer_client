@@ -16,7 +16,7 @@ import type { Analysis, ApiFailureData } from '@/shared/model/types';
 
 import { uploadApi } from '../api';
 
-import { DROPZONE_ERROR_TO_MESSAGE, MAX_SIZE, MIMETYPES } from './constants';
+import { DROPZONE_ERROR_TO_MESSAGE, LOADING_WORDS, MAX_SIZE, MIMETYPES } from './constants';
 
 export const useUpload = (onAnalysisReady: (analysis: Analysis) => void) => {
     const { request_count, request_limit, isUnlimited, role } = useUser(useShallow(userSelector));
@@ -32,7 +32,8 @@ export const useUpload = (onAnalysisReady: (analysis: Analysis) => void) => {
 
     const [image, setImage] = useState<{ file: File; url: string } | null>(null);
     const [sportType, setSportType] = useState<SportType | null>(null);
-    
+    const [loadingWordIndex, setLoadingWordIndex] = useState(0);
+
     useEffect(() => {
         if (isUnlimitedOrAdmin || !isReachedLimit) return;
         
@@ -99,6 +100,10 @@ export const useUpload = (onAnalysisReady: (analysis: Analysis) => void) => {
         }
     };
 
+    const onLoadingWordAnimationEnd = (_: React.AnimationEvent<HTMLSpanElement>) => {
+        setLoadingWordIndex((prev) => (prev + 1) % LOADING_WORDS[sportType!].length);
+    }
+
     const handleDropOrSelect = (_: DragEvent | React.ChangeEvent<HTMLInputElement>, files: Array<File>) => {
         if (isReachedLimit) return;
 
@@ -144,11 +149,13 @@ export const useUpload = (onAnalysisReady: (analysis: Analysis) => void) => {
         sportType,
         isStatusLoading,
         onStartAnalysis,
+        onLoadingWordAnimationEnd,
         onSportTypeChange,
         delta,
         timer,
         isAnalyzing,
         request_limit,
+        loadingWordIndex,
         isOvered,
         onChange,
         image,
