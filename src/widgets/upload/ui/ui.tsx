@@ -1,4 +1,4 @@
-import { Fragment } from 'react/jsx-runtime';
+
 import { useShallow } from 'zustand/shallow';
 
 import { SportDropdown } from '@/features/sport-dropdown';
@@ -36,6 +36,7 @@ export const Upload = ({ onAnalysisReady }: UploadProps) => {
         ref,
         percent,
         isAnalyzing,
+        loadingWordIndex,
         isStatusLoading
     } = useUpload(onAnalysisReady);
 
@@ -59,41 +60,15 @@ export const Upload = ({ onAnalysisReady }: UploadProps) => {
                     accept='image/jpeg, image/png'
                     disabled={isAnalyzing || isReachedLimit}
                 />
-                {isAnalyzing && sportType && image && (
-                    <div className='left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 px-3 absolute z-10 gap-2 max-sm:max-w-[300px] max-w-[500px] w-full overflow-hidden h-14'>
-                        {LOADING_WORDS[sportType].map((word, index, arr) => {
-                            if (index === arr.length - 1) {
-                                return (
-                                    <Fragment key={'fragment-loader-words-list'}>
-                                        <Typography
-                                            size='md'
-                                            weight='bold'
-                                            className='flex items-center justify-center text-primary-white size-full animate-text-loader text-center'
-                                        >
-                                            {word}
-                                        </Typography>
-                                        <Typography
-                                            size='md'
-                                            weight='bold'
-                                            className='flex items-center justify-center text-primary-white size-full animate-text-loader text-center'
-                                        >
-                                            {arr[0]}
-                                        </Typography>
-                                    </Fragment>
-                                );
-                            }
-
-                            return (
-                                <Typography
-                                    key={index}
-                                    size='md'
-                                    weight='bold'
-                                    className='flex items-center justify-center text-primary-white size-full animate-text-loader text-center'
-                                >
-                                    {word}
-                                </Typography>
-                            );
-                        })}
+                {isAnalyzing && (
+                    <div className='left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 px-3 absolute z-10 max-sm:max-w-[300px] max-w-[500px] w-full overflow-hidden h-14'>
+                        <Typography
+                            size='md'
+                            weight='bold'
+                            className='flex items-center justify-center text-primary-white size-full animate-text-loader-fade text-center'
+                        >
+                            {LOADING_WORDS[sportType!][loadingWordIndex]}
+                        </Typography>
                     </div>
                 )}
                 {image ? (

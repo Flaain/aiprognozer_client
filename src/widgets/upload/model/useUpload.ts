@@ -16,7 +16,7 @@ import type { Analysis, ApiFailureData } from '@/shared/model/types';
 
 import { uploadApi } from '../api';
 
-import { DROPZONE_ERROR_TO_MESSAGE, MAX_SIZE, MIMETYPES } from './constants';
+import { DROPZONE_ERROR_TO_MESSAGE, LOADING_WORDS, MAX_SIZE, MIMETYPES } from './constants';
 
 export const useUpload = (onAnalysisReady: (analysis: Analysis) => void) => {
     const { request_count, request_limit, isUnlimited, role } = useUser(useShallow(userSelector));
@@ -32,7 +32,18 @@ export const useUpload = (onAnalysisReady: (analysis: Analysis) => void) => {
 
     const [image, setImage] = useState<{ file: File; url: string } | null>(null);
     const [sportType, setSportType] = useState<SportType | null>(null);
-    
+    const [loadingWordIndex, setLoadingWordIndex] = useState(0);
+
+    useEffect(() => {
+        if (!isAnalyzing) return;
+
+        const intervalId = setInterval(() => {
+            setLoadingWordIndex((prev) => (prev + 1) % LOADING_WORDS[sportType!].length);
+        }, 2000);
+
+        return () => clearInterval(intervalId);
+    }, [isAnalyzing, sportType]);
+
     useEffect(() => {
         if (isUnlimitedOrAdmin || !isReachedLimit) return;
         
@@ -64,6 +75,8 @@ export const useUpload = (onAnalysisReady: (analysis: Analysis) => void) => {
 
             setIsAnalyzing(true);
             
+            await new Promise((resolve) => setTimeout(resolve, 5000));
+
             hapticFeedbackImpactOccurred('medium');
 
             !isUnlimitedOrAdmin && updateRequestCount('inc');
@@ -149,6 +162,7 @@ export const useUpload = (onAnalysisReady: (analysis: Analysis) => void) => {
         timer,
         isAnalyzing,
         request_limit,
+        loadingWordIndex,
         isOvered,
         onChange,
         image,
