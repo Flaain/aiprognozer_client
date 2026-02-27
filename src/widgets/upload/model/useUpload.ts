@@ -35,16 +35,6 @@ export const useUpload = (onAnalysisReady: (analysis: Analysis) => void) => {
     const [loadingWordIndex, setLoadingWordIndex] = useState(0);
 
     useEffect(() => {
-        if (!isAnalyzing) return;
-
-        const intervalId = setInterval(() => {
-            setLoadingWordIndex((prev) => (prev + 1) % LOADING_WORDS[sportType!].length);
-        }, 2000);
-
-        return () => clearInterval(intervalId);
-    }, [isAnalyzing, sportType]);
-
-    useEffect(() => {
         if (isUnlimitedOrAdmin || !isReachedLimit) return;
         
         const controller = new AbortController();
@@ -75,8 +65,6 @@ export const useUpload = (onAnalysisReady: (analysis: Analysis) => void) => {
 
             setIsAnalyzing(true);
             
-            await new Promise((resolve) => setTimeout(resolve, 5000));
-
             hapticFeedbackImpactOccurred('medium');
 
             !isUnlimitedOrAdmin && updateRequestCount('inc');
@@ -111,6 +99,10 @@ export const useUpload = (onAnalysisReady: (analysis: Analysis) => void) => {
             setIsAnalyzing(false);
         }
     };
+
+    const onLoadingWordAnimationEnd = (_: React.AnimationEvent<HTMLSpanElement>) => {
+        setLoadingWordIndex((prev) => (prev + 1) % LOADING_WORDS[sportType!].length);
+    }
 
     const handleDropOrSelect = (_: DragEvent | React.ChangeEvent<HTMLInputElement>, files: Array<File>) => {
         if (isReachedLimit) return;
@@ -157,6 +149,7 @@ export const useUpload = (onAnalysisReady: (analysis: Analysis) => void) => {
         sportType,
         isStatusLoading,
         onStartAnalysis,
+        onLoadingWordAnimationEnd,
         onSportTypeChange,
         delta,
         timer,

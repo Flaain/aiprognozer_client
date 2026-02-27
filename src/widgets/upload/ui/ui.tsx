@@ -28,6 +28,7 @@ export const Upload = ({ onAnalysisReady }: UploadProps) => {
         sportType,
         timer,
         onSportTypeChange,
+        onLoadingWordAnimationEnd,
         delta,
         request_limit,
         isReachedLimit,
@@ -66,6 +67,7 @@ export const Upload = ({ onAnalysisReady }: UploadProps) => {
                             size='md'
                             weight='bold'
                             className='flex items-center justify-center text-primary-white size-full animate-text-loader-fade text-center'
+                            onAnimationIteration={onLoadingWordAnimationEnd}
                         >
                             {LOADING_WORDS[sportType!][loadingWordIndex]}
                         </Typography>
