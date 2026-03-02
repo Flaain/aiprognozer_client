@@ -62,16 +62,14 @@ export const Upload = ({ onAnalysisReady }: UploadProps) => {
                     disabled={isAnalyzing || isReachedLimit}
                 />
                 {isAnalyzing && (
-                    <div className='left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 px-3 absolute z-10 max-sm:max-w-[300px] max-w-[500px] w-full overflow-hidden h-14'>
-                        <Typography
-                            size='md'
-                            weight='bold'
-                            className='flex items-center justify-center text-primary-white size-full animate-text-loader-fade text-center'
-                            onAnimationIteration={onLoadingWordAnimationEnd}
-                        >
-                            {LOADING_WORDS[sportType!][loadingWordIndex]}
-                        </Typography>
-                    </div>
+                    <Typography
+                        size='lg'
+                        weight='bold'
+                        className='left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 px-3 absolute z-10 max-sm:max-w-[300px] max-w-[500px] size-full overflow-hidden flex items-center justify-center text-primary-white animate-text-loader-fade text-center'
+                        onAnimationIteration={onLoadingWordAnimationEnd}
+                    >
+                        {LOADING_WORDS[sportType!][loadingWordIndex]}
+                    </Typography>
                 )}
                 {image ? (
                     <div className='flex size-full grow-1 overflow-hidden rounded-[14px]'>

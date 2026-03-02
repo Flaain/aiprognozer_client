@@ -100,9 +100,9 @@ export const useUpload = (onAnalysisReady: (analysis: Analysis) => void) => {
         }
     };
 
-    const onLoadingWordAnimationEnd = (_: React.AnimationEvent<HTMLSpanElement>) => {
+    const onLoadingWordAnimationEnd = () => {
         setLoadingWordIndex((prev) => (prev + 1) % LOADING_WORDS[sportType!].length);
-    }
+    };
 
     const handleDropOrSelect = (_: DragEvent | React.ChangeEvent<HTMLInputElement>, files: Array<File>) => {
         if (isReachedLimit) return;
