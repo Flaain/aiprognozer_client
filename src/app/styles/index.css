@@ -11,7 +11,8 @@
     --color-primary-error: tomato;
 
     --animate-shimmer: shimmer 3.5s infinite 5s;
-    --animate-text-loader-fade: text-loader-fade 2s ease-in-out infinite;
+    --animate-text-loader-fade: text-loader-fade 2s reverse ease-in-out infinite;
+    
     --navbar-height: 50px;
 
     --padding-t-main: 10px;
@@ -41,19 +42,19 @@
     @keyframes text-loader-fade {
         0% {
             opacity: 0;
-            transform: translateY(-4px);
+            transform: translate3d(0, 4px, 0);
         }
         20% {
             opacity: 1;
-            transform: translateY(0);
+            transform: translate3d(0, 0, 0);
         }
         80% {
             opacity: 1;
-            transform: translateY(0);
+            transform: translate3d(0, 0, 0);
         }
         100% {
             opacity: 0;
-            transform: translateY(4px);
+            transform: translate3d(0, -4px, 0);
         }
     }
 }
